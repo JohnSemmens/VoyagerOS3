@@ -69,18 +69,28 @@ void UpdateCourseToSteer(void)
 			// if outside the configured radius of the waypoint, then calculate the course to steer.
 			// otherwise don't calculate course, that is hold course
 			// this is to prevent dramatic and unnecessary course changes close to the waypoint.
-			if (NavData.DTW >= Configuration.WPCourseHoldRadius) // || (NavData.DTW >= MissionValues.MissionList[StateValues.mission_index].boundary))
+			// the hold radius is dynamically calculated as the greater of maxCTE/2 and Configuration.WPCourseHoldRadius.
+			long HoldCourseRadius; 
+			if ((NavData.MaxCTE / 2) > Configuration.WPCourseHoldRadius)
 			{
-				NavData.CTS = CalculateSailingCTS();
+				HoldCourseRadius = (NavData.MaxCTE / 2);
 			}
 			else
+			{
+				HoldCourseRadius = Configuration.WPCourseHoldRadius;
+			}
+
+			if (NavData.DTW < HoldCourseRadius) // || (NavData.TackDuration <  Configuration.MinimumTackTime))
 			{
 				// we're inside the circle. hold course, but make sure its a sailable course
 				NavData.CTS = LimitToSailingCourse(NavData.CTS);
 				DecisionEventReason = DecisionEventReasonType::rApproachingWP;
 				DecisionEvent = DecisionEventType::deHoldCourse;
-			//	TelemetryLogging_Event_Decisions(CommandPort, Configuration.TelemetryLoggingMask);
 				SD_Logging_Event_Decisions();
+			}
+			else
+			{
+				NavData.CTS = CalculateSailingCTS();
 			}
 			break;
 

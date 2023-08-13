@@ -13,7 +13,7 @@
 #include "CommandState_Processor.h"
 #include "HAL_GPS.h"
 
-static const int EEPROM_Storage_Version_Const = 37;   // change this number to force config to be cleared and revert to default.
+static const int EEPROM_Storage_Version_Const = 46;   // change this number to force config to be cleared and revert to default.
 
 struct configValuesType {
 	byte EEPROM_Storage_Version = EEPROM_Storage_Version_Const; // stored object version. this is to test if the data being retrieve is valid with reference to this version. 
@@ -67,10 +67,13 @@ struct configValuesType {
 	bool DualRudder; // False: means normal single rudder system. True: means Dual Rudder system with auto cut-off.
 	bool UseMotor;	 // True: means that a drive motor has been installed and is available to use.
 
-	int SatCommsPort; // Serial Port for Satellite Communications - terse 
+
 	int GPSPort;
 	int LoRaPort;  // Serial Port for CLI - verbose
 	int BluetoothPort; // Serial Port for Bluetooth Module
+
+	int SatCommsPort; // Serial Port for Satellite Communications - terse 
+	bool SatCommsEnabled;
 
 	uint32_t LoRaPortBaudRate;	//  9600 Baud
 	uint32_t SatCommsPortBaudRate;  // Baud Rate
@@ -105,11 +108,14 @@ struct configValuesType {
 
 	int CTE_CorrectionGain; // this the gain of the CTE steering correction adjustment
 
-	GPS_PowerModeType GPS_PowerMode;
-	long DTB_Threshold;			// Distance to Boundary threshold for changing to low power nav mode.
-	long GPS_Max_Sleep_Time;	// seconds. Sleep time for GPS in low power Nav mode
-	long GPS_Min_Wake_Time;		// seconds minimum wake time
-	long GPS_Setttle_Time;	// seconds. Time to wait after GPS location becomes valid before using location data.
+//	GPS_PowerModeType GPS_PowerMode;
+	//long DTB_Threshold;			// Distance to Boundary threshold for changing to low power nav mode.
+	//long GPS_Max_Sleep_Time;	// seconds. Sleep time for GPS in low power Nav mode
+	//long GPS_Min_Wake_Time;		// seconds minimum wake time
+	//long GPS_Setttle_Time;	// seconds. Time to wait after GPS location becomes valid before using location data.
+
+	long MinimumTackTime; //  seconds hold time 
+
 };
 
 /* Storage Map for EEPROM

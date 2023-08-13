@@ -1,6 +1,6 @@
 // 
 // 
-// 
+//  V1.1 22/7/2023 removed GPS power controls.
 
 #include "HAL_Display.h"
 #include "HAL.h"
@@ -27,6 +27,9 @@
 #include "TimeLib.h"
 #include "BluetoothConnection.h"
 #include "InternalTemperature.h"
+//#include "astronode.h"
+#include <Time.h>
+#include "HAL_SatCom.h"
 
 extern NavigationDataType NavData;
 extern StateValuesStruct StateValues;
@@ -65,6 +68,7 @@ extern int HWConfigNumber;
 extern byte BluetoothStatePin;
 extern BTStateType BTState;
 extern HALServo servo;
+extern HALSatComms SatComm;
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
@@ -132,10 +136,10 @@ void HALDisplay::Page(char page)
 	// o: Current Mission Step
 	// p: GPS Detail Data 
 	// q: Sail Navigation Parameters #2
-	// r: 
+	// r: Time Comparison Screen
 	// s: Situation
 	// t: Timing display including millis()
-	// u: 
+	// u: Sat Comms Status
 	// v: Version/Time Display 
 	// w: Waypoints
 	// x: Wing sail 
@@ -775,8 +779,8 @@ void HALDisplay::Page(char page)
 			display.println(year());
 
 			// Row 4 -- state
-			display.print("state:");
-			display.print(gps.PowerModeString());
+		//	display.print("state:");
+		//	display.print(gps.PowerModeString());
 
 			display.display();
 			break;
@@ -981,70 +985,35 @@ void HALDisplay::Page(char page)
 			display.display();
 			break;
 
-		case 'U':
-			// 	Sail Navigation Parameters **********************************
+		case 'u':
+			// 	Sat Comms **********************************
 			// u: Sail Navigation Parameters
 			display.clearDisplay();
 			display.setCursor(0, 0);
 			display.setTextSize(1);
 
-			// Row 1 -- BTW AWA
-			display.print(F("BTW:"));
-			display.print(NavData.BTW);
-
-			display.print(F(" Sailable:"));
-			if (NavData.IsBTWSailable)
-				display.print("Y");
-			else
-				display.print("N");
+			// Row 1 -- astronode
+			display.print("RSSI:");
+			display.print(SatComm.RSSI);
+			display.print(" Msgs:");
+			display.print(SatComm.OutboundMsgCount);
+			display.print(" Next:");
+			display.print(SatComm.timeToNextSat);
 			display.println();
 
 			// Row 2 -- 
-			display.print(F("TWD:"));
-			display.print(NavData.TWD);
-
-			display.print(F(" CTS:"));
-			display.print(NavData.CTS);
-
+			char timestamp[20];
+			strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", localtime(&SatComm.timeValue));
+			display.print(timestamp);
 			display.println();
 
 			// Row 3 --
-			display.print(F("AWA:"));
-			display.print(NavData.AWA);
-
-			display.print(" ");
-			switch (NavData.PointOfSail)
-			{
-			case PointOfSailType::psNotEstablished:
-				display.print(F("N/A"));
-				break;
-
-			case PointOfSailType::psPortTackBeating:
-				display.print(F("Port Beat"));
-				break;
-
-			case PointOfSailType::psPortTackRunning:
-				display.print(F("Port Run"));
-				break;
-
-			case PointOfSailType::psStarboardTackBeating:
-				display.print(F("Stbd Beat"));
-				break;
-
-			case PointOfSailType::psStarboardTackRunning:
-				display.print(F("Stbd Run"));
-				break;
-
-			default:;
-			}
+			display.print("Cmd: ");
+			display.print(SatComm.LastCommand);
 			display.println();
 
 			// Row 4 --  
-			display.print(F("HDG:"));
-			display.print(NavData.HDG);
-			display.print(F(" AWATW: "));
-			display.print((int)NavData.WindAngleToWaypoint);
-			display.println();
+			//display.print(SatComm.TestCounter);
 			display.display();
 			break;
 
@@ -1354,15 +1323,15 @@ void HALDisplay::Page(char page)
 			display.println();
 
 			// Row 3 --
-			display.print(F("GPS: "));
-			if (gps.Enabled)
-				display.print("On ");
-			else
-				display.print("Off");
-			display.print(" ");
-			display.print(F("Valid:"));
-			display.print(gps.Valid_Duration);
-			display.print("s");
+			//display.print(F("GPS: "));
+			//if (gps.Enabled)
+			//	display.print("On ");
+			//else
+			//	display.print("Off");
+			//display.print(" ");
+			//display.print(F("Valid:"));
+			//display.print(gps.Valid_Duration);
+			//display.print("s");
 			display.println();
 
 			// Row 4 --
@@ -1409,6 +1378,76 @@ void HALDisplay::Page(char page)
 
 			display.display();
 			break;
+
+
+		case 'U':
+			// 	Sail Navigation Parameters **********************************
+			// u: Sail Navigation Parameters
+			display.clearDisplay();
+			display.setCursor(0, 0);
+			display.setTextSize(1);
+
+			// Row 1 -- BTW AWA
+			display.print(F("BTW:"));
+			display.print(NavData.BTW);
+
+			display.print(F(" Sailable:"));
+			if (NavData.IsBTWSailable)
+				display.print("Y");
+			else
+				display.print("N");
+			display.println();
+
+			// Row 2 -- 
+			display.print(F("TWD:"));
+			display.print(NavData.TWD);
+
+			display.print(F(" CTS:"));
+			display.print(NavData.CTS);
+
+			display.println();
+
+			// Row 3 --
+			display.print(F("AWA:"));
+			display.print(NavData.AWA);
+
+			display.print(" ");
+			switch (NavData.PointOfSail)
+			{
+			case PointOfSailType::psNotEstablished:
+				display.print(F("N/A"));
+				break;
+
+			case PointOfSailType::psPortTackBeating:
+				display.print(F("Port Beat"));
+				break;
+
+			case PointOfSailType::psPortTackRunning:
+				display.print(F("Port Run"));
+				break;
+
+			case PointOfSailType::psStarboardTackBeating:
+				display.print(F("Stbd Beat"));
+				break;
+
+			case PointOfSailType::psStarboardTackRunning:
+				display.print(F("Stbd Run"));
+				break;
+
+			default:;
+			}
+			display.println();
+
+			// Row 4 --  
+			display.print(F("HDG:"));
+			display.print(NavData.HDG);
+			display.print(F(" AWATW: "));
+			display.print((int)NavData.WindAngleToWaypoint);
+			display.println();
+			display.display();
+			break;
+
+
 
 		// Wingsail Version and Power Display **********************************
 		case 'W':

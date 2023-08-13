@@ -145,7 +145,7 @@ struct NavigationDataType {
 
 	 long DTB;			// Distance to Boundary - metres - distance to nearest boundary either Max CTE or DTW.
 						// this is used to assess whether we should be in low power nav mode, or full power for improve accuracy
-	 bool LowPowerMode;		// Low Power Mode. This is when we are a long way from a boundary.
+	// bool LowPowerMode;		// Low Power Mode. This is when we are a long way from a boundary.
 };
 
 void NavigationUpdate_SlowData(void);

@@ -20,11 +20,6 @@
 
 #include <Servo.h>
 
-//
-//void Servos_Init(void);
-//
-//void Servo_Out(int Channel, int PulseWidth);
-
 
 class HALServo
 {

@@ -29,7 +29,7 @@
 
 	void SD_Logging_Event_Wingsail_Power(void);
 	void SD_Logging_Event_Wingsail_Monitor(String Description);
-	void SD_Logging_Event_GPS_Power(void);
+	//void SD_Logging_Event_GPS_Power(void);
 
 	void LogTime(void);
 	void LogTimeHeader(void);

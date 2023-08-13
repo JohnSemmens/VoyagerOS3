@@ -1,25 +1,35 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.1.32421.90
+VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoyagerOS3", "VoyagerOS3.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoyagerOS3", "VoyagerOS3.vcxproj", "{0ED4A59E-290A-44A7-BC45-655BABC20D0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x86 = Debug|x86
-		Release|x86 = Release|x86
+		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.ActiveCfg = Debug|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.Build.0 = Release|Win32
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Debug|ARM.ActiveCfg = Debug|ARM
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Debug|ARM.Build.0 = Debug|ARM
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Debug|ARM.Deploy.0 = Debug|ARM
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Debug|ARM64.Build.0 = Debug|ARM64
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Release|ARM.ActiveCfg = Release|ARM
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Release|ARM.Build.0 = Release|ARM
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Release|ARM.Deploy.0 = Release|ARM
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Release|ARM64.ActiveCfg = Release|ARM64
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Release|ARM64.Build.0 = Release|ARM64
+		{0ED4A59E-290A-44A7-BC45-655BABC20D0D}.Release|ARM64.Deploy.0 = Release|ARM64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {DA943A46-70A0-470A-8AC1-59780493191F}
+		SolutionGuid = {80E54D78-DE8A-44BF-80D7-63B24A753472}
 	EndGlobalSection
 EndGlobal

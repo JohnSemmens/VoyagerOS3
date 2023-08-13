@@ -19,6 +19,8 @@
 // V1.14 4/8/2021 updated to support full addressing
 // V1.15 13/10/2021 add support for reply from wing sail
 // V1.16 22/5/2022 removing relaying and addressing.
+// V1.17 22/7/2023 removed GPS power controls.
+//					Removed telemetry feedback on MIS and MCC. They were interfering with the mission programming sequence.
 
 #include "CommandState_Processor.h"
 #include "Mission.h"
@@ -65,13 +67,14 @@ extern int DecisionEventValue2;
 extern int LastParameterIndex;
 
 extern sim_vessel simulated_vessel;
+extern HALSatComms SatComm;
 
 // Command Line Interpreter - Global Variables
 char CLI_Msg[60];
 unsigned int CLI_i = 0;
 
 // temporary test code to investigate init strings for the NEO-8M GPS.
-int GPSInitMessageNumber;
+//int GPSInitMessageNumber;
 
 // Collect the characters into a command string until end end of line,
 // and then process it.
@@ -295,7 +298,7 @@ void CLI_Processor(int CommandPort)
 		// update next WP for display purposes.
 		set_next_WP_for_display();
 
-		QueueMessage(TelMessageType::MIS);
+		//QueueMessage(TelMessageType::MIS);  // don't send feedback. its blocking the next message.
 	}
 
 	// ===============================================
@@ -422,7 +425,7 @@ void CLI_Processor(int CommandPort)
 		StateValues.StartingMission = true;
 		NavData.next_WP_valid = false;
 
-		QueueMessage(TelMessageType::MCC);
+		//QueueMessage(TelMessageType::MCC); // don't send feedback. its blocking the next message.
 	}
 
 	// ===============================================
@@ -555,7 +558,7 @@ void CLI_Processor(int CommandPort)
 	// ===============================================
 	if (!strncmp(cmd, "stv", 3))
 	{
-		sendSatComVesselState();
+		// SatComm.sendSatComVesselState();
 	}
 
 	// ===============================================
@@ -564,7 +567,7 @@ void CLI_Processor(int CommandPort)
 	// ===============================================
 	if (!strncmp(cmd, "stm", 3))
 	{
-		sendSatComMissionEvent(StateValues.mission_index);
+		// SatComm.sendSatComMissionEvent(StateValues.mission_index);
 	}
 
 	// ===============================================
@@ -691,15 +694,15 @@ void CLI_Processor(int CommandPort)
 		strcpy(MessageDisplayLine2, param2);
 	}
 
-	// ===============================================
-	// 	Command gps, set GPS Power Mode
-	// ===============================================
-	// Paramters: Line1, Line2
-	// 
-	if (!strncmp(cmd, "gps", 3))
-	{
-		Configuration.GPS_PowerMode = (GPS_PowerModeType)atoi(param1);
-	}
+	//// ===============================================
+	//// 	Command gps, set GPS Power Mode
+	//// ===============================================
+	//// Paramters: Line1, Line2
+	//// 
+	//if (!strncmp(cmd, "gps", 3))
+	//{
+	//	Configuration.GPS_PowerMode = (GPS_PowerModeType)atoi(param1);
+	//}
 
 	// ===============================================
 	// 	prl, Parameter List   
@@ -781,12 +784,12 @@ void CLI_Processor(int CommandPort)
 
 		case 9:
 			// temporary test code to investigate init strings for the NEO-8M GPS.
-			GPSInitMessageNumber = atoi(param2);
-			gps.SendConfigurationString(GPSInitMessageNumber);
+			//GPSInitMessageNumber = atoi(param2);
+			//gps.SendConfigurationString(GPSInitMessageNumber);
 			break;
 
 		case 10:
-			Configuration.UseGPSInitString = atoi(param2);
+			//Configuration.UseGPSInitString = atoi(param2);
 			break;
 
 		case 11:
@@ -964,15 +967,15 @@ void CLI_Processor(int CommandPort)
 			break;
 
 		case 53:
-			Configuration.DTB_Threshold = atoi(param2);
+			//Configuration.DTB_Threshold = atoi(param2);
 			break;
 
 		case 54:
-			Configuration.GPS_Max_Sleep_Time = atoi(param2);
+			//Configuration.GPS_Max_Sleep_Time = atoi(param2);
 			break;
 
 		case 55:
-			Configuration.GPS_Min_Wake_Time = atoi(param2);
+			//Configuration.GPS_Min_Wake_Time = atoi(param2);
 			break;
 
 		default:;
@@ -1073,6 +1076,22 @@ void CLI_Processor(int CommandPort)
 	{
 		QueueMessage(TelMessageType::LWS);
 	}
+
+ // ********** Watchdog trgger command
+
+	// ===============================================
+	// Command: rbt - Reboot (Freeze) command - used for exercising the Watch Dog and rebooting
+	// ===============================================
+	// one Parameter // send the command "rbt,99" to force the procesor to freeze and exercise the watchdog.
+	if (!strncmp(cmd, "rbt", 3))
+	{
+		if (atoi(param1) == 99)
+		{
+			SD_Logging_Event_Messsage("WatchDog Test commencing... " );
+			while (1) {}; // WARNING !!! Deliberate FREEZE occurs here !!! 
+			// then Watchdog should trigger and cause a reboot.
+		}
+	}
 }
 	// ********** End - LoRa Polling Commands *****************************************************************************
 
@@ -1132,8 +1151,8 @@ void ListParameter(int CommandPort,int ParameterIndex)
 
 	case 9:
 		// temporary test code to investigate init strings for the NEO-8M GPS.
-		(*Serials[CommandPort]).print(F("GPSInitMessageNumber,"));
-		(*Serials[CommandPort]).print(GPSInitMessageNumber);
+	//	(*Serials[CommandPort]).print(F("GPSInitMessageNumber,"));
+	//	(*Serials[CommandPort]).print(GPSInitMessageNumber);
 		break;
 
 	case 10:
@@ -1353,18 +1372,18 @@ void ListParameter(int CommandPort,int ParameterIndex)
 		break;
 
 	case 53: 
-		(*Serials[CommandPort]).print(F("DTB_Threshold,"));
-		(*Serials[CommandPort]).print(Configuration.DTB_Threshold);
+		//(*Serials[CommandPort]).print(F("DTB_Threshold,"));
+		//(*Serials[CommandPort]).print(Configuration.DTB_Threshold);
 		break;
 
 	case 54:
-		(*Serials[CommandPort]).print(F("GPS_Max_Sleep_Time,"));
-		(*Serials[CommandPort]).print(Configuration.GPS_Max_Sleep_Time);
+		//(*Serials[CommandPort]).print(F("GPS_Max_Sleep_Time,"));
+		//(*Serials[CommandPort]).print(Configuration.GPS_Max_Sleep_Time);
 		break;
 
 	case 55:
-		(*Serials[CommandPort]).print(F("GPS_Min_Wake_Time,"));
-		(*Serials[CommandPort]).print(Configuration.GPS_Min_Wake_Time);
+		//(*Serials[CommandPort]).print(F("GPS_Min_Wake_Time,"));
+		//(*Serials[CommandPort]).print(Configuration.GPS_Min_Wake_Time);
 		break;
 
 	default:

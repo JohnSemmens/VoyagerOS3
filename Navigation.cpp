@@ -9,6 +9,7 @@
 // V1.6 20/6/2020 added VMG and VMC, SOG_Avg and COG_Avg
 // V1.7 2/1/2021 added Laylines for running to the NavData structure
 //				 added Port and Starboard Tack Running to SteeringCourseType enum
+// V1.8 22/7/2023 removed GPS power controls.
 
 #include "location.h"
 #include "Navigation.h"
@@ -97,7 +98,7 @@ void NavigationUpdate_SlowData(void)
 		NavData.DTH = 0;
 		NavData.BTH = 0;
 		NavData.DTB = 0;
-		NavData.LowPowerMode = false;
+	//	NavData.LowPowerMode = false;
 	}
 
 	NavData.PointOfSail = GetPointOfSail(NavData.AWA);
@@ -457,6 +458,6 @@ void CalcDistToBoundary()
 	if (NavData.DTW < NavData.DTB)
 		NavData.DTB = NavData.DTW;
 
-	// Low Power Mode is true, if Distance to Boundary is less than the threshold.
-	NavData.LowPowerMode = (NavData.DTB > Configuration.DTB_Threshold);
+	//// Low Power Mode is true, if Distance to Boundary is less than the threshold.
+	//NavData.LowPowerMode = (NavData.DTB > Configuration.DTB_Threshold);
 }

@@ -17,9 +17,11 @@ extern WingSailType WingSail;
 void Bluetooth_Init(int BluetoothPort)
 {
 	// called from setup()
-
+	Serial.print("*** Initialising Bluetooth Serial: ");
+	Serial.println(BluetoothPort);
 	(*Serials[BluetoothPort]).begin(Configuration.BTPortBaudRate);
 	pinMode(BluetoothStatePin, INPUT_PULLUP);
+	Serial.println("*** Bluetooth Serial Initialised.");
 }
 
 void BluetoothManageConnection(int BluetoothPort)

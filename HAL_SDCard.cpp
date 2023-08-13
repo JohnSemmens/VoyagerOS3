@@ -13,6 +13,7 @@
 // V1.16 11/7/2019 added Heading Error from GPS
 // V1.17 8/1/2022 updated WSP to record voltages with 3 digits to observe discharge rates.
 // V1.18 19/6/2022 added GPSPwr sentence as Event.
+// V1.19 22/7/2023 removed GPS power controls. 
 
 #include "WaveMeasurement.h"
 #include "HAL.h"
@@ -35,6 +36,8 @@
 #include "TimeLib.h"
 #include "HAL_SatCom.h"
 #include "InternalTemperature.h"
+#include "HAL_SatCom.h"
+#include <Time.h>
 
 extern File LogFile;
 
@@ -68,6 +71,7 @@ extern MissionValuesStruct MissionValues;
 extern char Version[];
 extern WaveClass Wave;
 extern HALServo servo;
+extern HALSatComms SatComm;
 
 void dateTime(uint16_t* date, uint16_t* time)
 {
@@ -295,8 +299,6 @@ void SD_Logging_OpenFile() {
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(F("LocationAge"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("ValidDuration"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(F("SimulatedGPS"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.println(F("Loc_Valid"));
@@ -455,17 +457,18 @@ void SD_Logging_OpenFile() {
 	LogTimeHeader();
 	LogFile.print(F("WingAngle"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
-
 	LogFile.println();
 
-	// GPS Power Mode Event 
-	LogFile.print(F("GPSPw"));
+	// Sat Comms Data 
+	LogFile.print(F("Sat"));
 	LogTimeHeader();
-	LogFile.print(F("PowerMode"));
+	LogFile.print(F("RTC"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("Enabled"));
+	LogFile.print(F("RSSI"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("DTB m"));
+	LogFile.print(F("TimeToNext"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("Msgs"));
 	LogFile.println();
 
 	// log software version and other userful data at the start of each log file
@@ -622,8 +625,8 @@ void SD_Logging_1s()
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(gps.Location_Age);
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(gps.Valid_Duration);
-	LogFile.print(Configuration.SDCardLogDelimiter);
+	//LogFile.print(gps.Valid_Duration);
+	//LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(UseSimulatedVessel);
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(gps.GPS_LocationIs_Valid(NavData.Currentloc));
@@ -724,7 +727,21 @@ void SD_Logging_1m()
 	LogTime();
 	LogFile.print(GetEquipmentStatusString(WingAngleSensor.PortStatus));
 	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.println();
 
+	// Sat Comms Data 
+	LogFile.print(F("Sat"));
+	LogTimeHeader();
+
+	char timestamp[20];
+	strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", localtime(&SatComm.timeValue));
+	LogFile.print(timestamp);
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(SatComm.RSSI);
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(SatComm.timeToNextSat);
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(SatComm.OutboundMsgCount);
 	LogFile.println();
 
 	SD_Logging_Waypoint();
@@ -738,7 +755,7 @@ void SD_Logging_Waypoint()
 	// log waypoint details
 	// V1.0 8/11/2021 John Semmens
 
-	// this is called once per miunute and also at each mission step change
+	// this is called once per minute and also at each mission step change
 
 	char FloatString[16];
 
@@ -816,6 +833,7 @@ void SD_Logging_Event_Messsage(String message)
 	LogTime();
 	LogFile.print(message);
 	LogFile.println();
+	LogFile.flush();
 }
 
 void SD_Logging_Event_MissionStep(int mission_index)
@@ -844,7 +862,7 @@ void SD_Logging_Event_MissionStep(int mission_index)
 	LogFile.print(dtostrf(float(MissionValues.MissionList[mission_index].waypoint.lng) / 10000000UL, 10, 5, FloatString));
 	LogFile.println();
 
-	sendSatComMissionEvent(mission_index);
+	// sendSatComMissionEvent(mission_index);
 }
 
 
@@ -898,15 +916,3 @@ void SD_Logging_Event_Wingsail_Monitor(String Description)
 	LogFile.println();
 }
 
-// GPS Power Mode Event 
-void SD_Logging_Event_GPS_Power()
-{
-	LogFile.print(F("GPSPw"));
-	LogTime();
-	LogFile.print(gps.PowerModeString());
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(gps.Enabled);
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(NavData.DTB);
-	LogFile.println();
-}

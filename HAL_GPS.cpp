@@ -3,6 +3,7 @@
 // to manage Location and Time
 // V1.0 16/6/2021
 // V1.1 14/11/2021 added Simulated GPS
+// V1.2 22/7/2023 removed GPS power controls.
 
 #include "HAL_GPS.h"
 
@@ -40,10 +41,10 @@ void HALGPS::Init() {
 	(*Serials[Configuration.GPSPort]).begin(9600);
 
 	// Enable the GPS - set the control pin to output and set high initially.
-	pinMode(GPSEnablePin, OUTPUT);
+	//pinMode(GPSEnablePin, OUTPUT);
 	//PowerMode = Configuration.GPS_PowerMode;   GPS_PowerModeType::Auto_DTB;
 	Location_Age = -1;
-	Valid_Duration = -1;
+	//Valid_Duration = -1;
 
 	// setup buffer as 100 bytes
 	static char SerialReadBuffer[100];
@@ -79,17 +80,17 @@ void HALGPS::Init() {
 
 	Read();
 
-	if (Configuration.UseGPSInitString)
-	{ 
-		Serial.println(F("GPS sending init string. "));
-		(*Serials[Configuration.GPSPort]).write(GPS_CFG_TP_1000_10ms, sizeof(GPS_CFG_TP_1000_10ms));
-		delay(100);
-		(*Serials[Configuration.GPSPort]).write(GPS_CFG_RXM_PSM, sizeof(GPS_CFG_RXM_PSM)); 
-	}
-	else
-	{
-		Serial.println(F("GPS NOT sending init string. "));
-	}
+	//if (Configuration.UseGPSInitString)
+	//{ 
+	//	Serial.println(F("GPS sending init string. "));
+	//	(*Serials[Configuration.GPSPort]).write(GPS_CFG_TP_1000_10ms, sizeof(GPS_CFG_TP_1000_10ms));
+	//	delay(100);
+	//	(*Serials[Configuration.GPSPort]).write(GPS_CFG_RXM_PSM, sizeof(GPS_CFG_RXM_PSM)); 
+	//}
+	//else
+	//{
+	//	Serial.println(F("GPS NOT sending init string. "));
+	//}
 
 	Serial.println(F("*** Initialising GPS complete."));
 	Serial.println();
@@ -100,7 +101,7 @@ void HALGPS::Read() {
 	// V1.2 14/4/2018 added GPS directly provided course and speed to Navdata object
 	// V1.3 21/10/2018 updated for change from serial to I2C 
 
-	static long prev_Location_Age;
+	//static long prev_Location_Age;
 
 	Location_Age = t_gps.location.age() / 1000;
 
@@ -113,22 +114,22 @@ void HALGPS::Read() {
 
 	// if the location age has jumped back to 0 from the max sleep time,
 	// then set the start time.
-	if (prev_Location_Age >= Configuration.GPS_Max_Sleep_Time && Location_Age ==0)
-	{
-		Valid_Start_Time  = millis();
-	}
-	prev_Location_Age = Location_Age;
+	//if (prev_Location_Age >= Configuration.GPS_Max_Sleep_Time && Location_Age ==0)
+	//{
+	//	Valid_Start_Time  = millis();
+	//}
+	//prev_Location_Age = Location_Age;
 
-	// if the location age is near zero (meaning location is current)
-	// then continiue calculating the valid age.
-	if (Location_Age >= 0 && Location_Age <= 2) 
-	{
-		Valid_Duration = (millis() - Valid_Start_Time) / 1000;
-	}
-	else 
-	{
-		Valid_Duration = 0;
-	}
+	//// if the location age is near zero (meaning location is current)
+	//// then continiue calculating the valid age.
+	//if (Location_Age >= 0 && Location_Age <= 2) 
+	//{
+	//	Valid_Duration = (millis() - Valid_Start_Time) / 1000;
+	//}
+	//else 
+	//{
+	//	Valid_Duration = 0;
+	//}
 
 	while ((*Serials[Configuration.GPSPort]).available()) //available() returns the number of new bytes available from the GPS module
 	{
@@ -138,19 +139,15 @@ void HALGPS::Read() {
 	// if not using a simulated GPS position (i.e. if real) then populate the NavData
 	if (!UseSimulatedVessel)
 	{
-		// hold off taking readings from GPS for a few seconds. Wait for it to stabilize.
-		if (Configuration.GPS_Setttle_Time < Valid_Duration)
-		{
-			NavData.Currentloc.lat = t_gps.location.lat() * 10000000UL;
-			NavData.Currentloc.lng = t_gps.location.lng() * 10000000UL;
-			NavData.CurrentLocTimeStamp = millis();
+		NavData.Currentloc.lat = t_gps.location.lat() * 10000000UL;
+		NavData.Currentloc.lng = t_gps.location.lng() * 10000000UL;
+		NavData.CurrentLocTimeStamp = millis();
 
-			// get course and speed directly from GPS
-			NavData.COG = t_gps.course.deg();
+		// get course and speed directly from GPS
+		NavData.COG = t_gps.course.deg();
 
-			NavData.SOG_knt = (float)t_gps.speed.knots();
-			NavData.SOG_mps = (float)t_gps.speed.mps();
-		}
+		NavData.SOG_knt = (float)t_gps.speed.knots();
+		NavData.SOG_mps = (float)t_gps.speed.mps();
 	}
 	else // populate with simulated data
 	{
@@ -190,149 +187,149 @@ bool HALGPS::GPS_LocationIs_Valid(Location TestLoc) {
 	else
 	{
 		// if real GPS, check for non=zero lat/lon and valid location provided in last 10 seconds
-		valid = (TestLoc.lat != 0 && TestLoc.lng != 0 && Location_Age >= 0 && Location_Age < 100000); // change 100 seconds
+		valid = (TestLoc.lat != 0 && TestLoc.lng != 0 && Location_Age >= 0 && Location_Age < 10000); // change 100 seconds
 	}
 
 	return valid;
 };
 
 
-void HALGPS::SendConfigurationString(char *GPS_Init_String)
-{
-	(*Serials[Configuration.GPSPort]).print(GPS_Init_String);
-}
+//void HALGPS::SendConfigurationString(char *GPS_Init_String)
+//{
+//	(*Serials[Configuration.GPSPort]).print(GPS_Init_String);
+//}
 
-void HALGPS::SendConfigurationString(int MsgNumber)
-{
-	switch(MsgNumber)
-	{
-	case 0: 
-		break;
+//void HALGPS::SendConfigurationString(int MsgNumber)
+//{
+//	switch(MsgNumber)
+//	{
+//	case 0: 
+//		break;
+//
+//	case 1:
+//		(*Serials[Configuration.GPSPort]).write(GPS_CFG_TP_1000_10ms, sizeof(GPS_CFG_TP_1000_10ms));
+//		break;
+//
+//	case 2:
+//		(*Serials[Configuration.GPSPort]).write(GPS_CFG_TP_2000_10ms, sizeof(GPS_CFG_TP_2000_10ms));
+//		break;
+//
+//	case 3:
+//		(*Serials[Configuration.GPSPort]).write(GPS_CFG_TP_200ms, sizeof(GPS_CFG_TP_200ms));
+//		break;
+//
+//	case 4:
+//		(*Serials[Configuration.GPSPort]).write(GPS_CFG_RXM_PSM, sizeof(GPS_CFG_RXM_PSM));
+//		break;
+//
+//	case 5:
+//		(*Serials[Configuration.GPSPort]).write(GPS_CFG_RXM_PSM, sizeof(GPS_CFG_RXM_PSM));
+//		(*Serials[Configuration.GPSPort]).write(GPS_CFG_RXM_PSM_OO_100s, sizeof(GPS_CFG_RXM_PSM_OO_100s));
+//		break;
+//
+//	case 6:
+//		(*Serials[Configuration.GPSPort]).write(GPS_CFG_RXM_PSM_OO_100s2, sizeof(GPS_CFG_RXM_PSM_OO_100s2));
+//		break;
+//	default:;
+//	}
+//}
 
-	case 1:
-		(*Serials[Configuration.GPSPort]).write(GPS_CFG_TP_1000_10ms, sizeof(GPS_CFG_TP_1000_10ms));
-		break;
 
-	case 2:
-		(*Serials[Configuration.GPSPort]).write(GPS_CFG_TP_2000_10ms, sizeof(GPS_CFG_TP_2000_10ms));
-		break;
+//void HALGPS::EnableGPS(bool state)
+//{
+//	Enabled = state;
+//	
+//	if (state)
+//	{
+//		digitalWrite(GPSEnablePin, HIGH); // enable the GPS
+//	}
+//	else
+//	{
+//		digitalWrite(GPSEnablePin, LOW); // disable the GPS
+//	}
+//
+//	SD_Logging_Event_GPS_Power();
+//}
 
-	case 3:
-		(*Serials[Configuration.GPSPort]).write(GPS_CFG_TP_200ms, sizeof(GPS_CFG_TP_200ms));
-		break;
+//void HALGPS::updatePowerState()
+//{
+//	// This expected to be called periodically, such as every 5 seconds.
+//	// Update the state of the GPS power depending on current mode and current state of power cycle.
+//	switch(Configuration.GPS_PowerMode)
+//	{
+//	case Off:
+//		EnableGPS(false);
+//		break;
+//
+//	case LowPower:
+//		if (gps.Location_Age > Configuration.GPS_Max_Sleep_Time ||  gps.Location_Age == -1)
+//		{
+//			// wakeup
+//			EnableGPS(true);
+//		}
+//
+//		if (gps.Valid_Duration > Configuration.GPS_Min_Wake_Time)
+//		{
+//			// sleep
+//			EnableGPS(false);
+//		}
+//		break;
+//
+//	case Auto_DTB:
+//		if (NavData.DTB < Configuration.DTB_Threshold) // if we are close to a boundary
+//		{
+//			// ensure the GPS is always on when close to a boundary.
+//			EnableGPS(true);
+//		}
+//		else
+//		{
+//			// this is a copy of "case LowPower:" above.
+//			if (gps.Location_Age > Configuration.GPS_Max_Sleep_Time || gps.Location_Age == -1)
+//			{
+//				// wakeup
+//				EnableGPS(true);
+//			}
+//
+//			if (gps.Valid_Duration > Configuration.GPS_Min_Wake_Time)
+//			{
+//				// sleep
+//				EnableGPS(false);
+//			}
+//		}
+//		break;
+//
+//	case Normal:
+//		EnableGPS(true);
+//		break;
+//
+//	default:;
+//	}
+//}
 
-	case 4:
-		(*Serials[Configuration.GPSPort]).write(GPS_CFG_RXM_PSM, sizeof(GPS_CFG_RXM_PSM));
-		break;
-
-	case 5:
-		(*Serials[Configuration.GPSPort]).write(GPS_CFG_RXM_PSM, sizeof(GPS_CFG_RXM_PSM));
-		(*Serials[Configuration.GPSPort]).write(GPS_CFG_RXM_PSM_OO_100s, sizeof(GPS_CFG_RXM_PSM_OO_100s));
-		break;
-
-	case 6:
-		(*Serials[Configuration.GPSPort]).write(GPS_CFG_RXM_PSM_OO_100s2, sizeof(GPS_CFG_RXM_PSM_OO_100s2));
-		break;
-	default:;
-	}
-}
-
-
-void HALGPS::EnableGPS(bool state)
-{
-	Enabled = state;
-	
-	if (state)
-	{
-		digitalWrite(GPSEnablePin, HIGH); // enable the GPS
-	}
-	else
-	{
-		digitalWrite(GPSEnablePin, LOW); // disable the GPS
-	}
-
-	SD_Logging_Event_GPS_Power();
-}
-
-void HALGPS::updatePowerState()
-{
-	// This expected to be called periodically, such as every 5 seconds.
-	// Update the state of the GPS power depending on current mode and current state of power cycle.
-	switch(Configuration.GPS_PowerMode)
-	{
-	case Off:
-		EnableGPS(false);
-		break;
-
-	case LowPower:
-		if (gps.Location_Age > Configuration.GPS_Max_Sleep_Time ||  gps.Location_Age == -1)
-		{
-			// wakeup
-			EnableGPS(true);
-		}
-
-		if (gps.Valid_Duration > Configuration.GPS_Min_Wake_Time)
-		{
-			// sleep
-			EnableGPS(false);
-		}
-		break;
-
-	case Auto_DTB:
-		if (NavData.DTB < Configuration.DTB_Threshold) // if we are close to a boundary
-		{
-			// ensure the GPS is always on when close to a boundary.
-			EnableGPS(true);
-		}
-		else
-		{
-			// this is a copy of "case LowPower:" above.
-			if (gps.Location_Age > Configuration.GPS_Max_Sleep_Time || gps.Location_Age == -1)
-			{
-				// wakeup
-				EnableGPS(true);
-			}
-
-			if (gps.Valid_Duration > Configuration.GPS_Min_Wake_Time)
-			{
-				// sleep
-				EnableGPS(false);
-			}
-		}
-		break;
-
-	case Normal:
-		EnableGPS(true);
-		break;
-
-	default:;
-	}
-}
-
-String HALGPS::PowerModeString()
-{
-	// return a display string representing the current GPS Power Mode.
-	String PowerModeStr;
-	switch (Configuration.GPS_PowerMode)
-	{
-	case Off:
-		PowerModeStr = F("Off");
-		break;
-
-	case LowPower:
-		PowerModeStr = F("LowPower");
-		break;
-
-	case Auto_DTB:
-		PowerModeStr = F("Auto_DTB");
-		break;
-
-	case Normal:
-		PowerModeStr = F("Normal");
-		break;
-
-	default:
-		PowerModeStr = F("unkown");
-	}
-	return PowerModeStr;
-}
+//String HALGPS::PowerModeString()
+//{
+//	// return a display string representing the current GPS Power Mode.
+//	String PowerModeStr;
+//	switch (Configuration.GPS_PowerMode)
+//	{
+//	case Off:
+//		PowerModeStr = F("Off");
+//		break;
+//
+//	case LowPower:
+//		PowerModeStr = F("LowPower");
+//		break;
+//
+//	case Auto_DTB:
+//		PowerModeStr = F("Auto_DTB");
+//		break;
+//
+//	case Normal:
+//		PowerModeStr = F("Normal");
+//		break;
+//
+//	default:
+//		PowerModeStr = F("unkown");
+//	}
+//	return PowerModeStr;
+//}

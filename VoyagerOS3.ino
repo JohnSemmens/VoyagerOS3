@@ -72,19 +72,25 @@
 //					added Wingsail data to telemetry
 // V3.2.21 30/10/2022 fix bugs in the gybe algorithm, using the simulator
 // V3.2.22  1/11/2022 bug fix. corrected sequence of calculating and applying Magnetic Heading corrections.
-// V3.2.23  14/11/2022 adjust port and stbd hold angles further away from the wind to avoid going into irons, due to compass error, before picking up speed on new heading
-// V3.2.24  19/11/2022 code refinement of the gybe manoeuvre
-// 
-// todo:	
-//
+// V3.2.23 14/11/2022 adjust port and stbd hold angles further away from the wind to avoid going into irons, due to compass error, before picking up speed on new heading
+// V3.2.24 19/11/2022 code refinement of the gybe manoeuvre
+// V3.2.25 12/5/2023 update for Voyager 2.7. new Sail Controller Mac address and time zone. 
+// V3.2.26 15/7/2023 adjust default config values	
+// V3.2.27 20/7/2023 Add Tack Time to dampen tacking to favoured course.
+// V3.2.28 22/7/2023 removed GPS power controls.
+//					Removed telemetry feedback on MIS and MCC. They were interferring with the mission programming sequence.
+// V3.2.29 29/7/2023 Updated hold radius handling and calculation.
+// V3.2.30 6/8/2023 Add Astrocast Astronode Sat Comms
+// V3.2.31 11/8/2023 Added Watchdog
 
-char Version[] = "vOS3.2.24";
-char VersionDate[] = "19/11/2022";
+
+char Version[] = "vOS3.2.31";
+char VersionDate[] = "12/8/2023";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0
 // may be built using 24MHz or 48MHz. 16MHz seems fine.
-// Operation seems fine on both, but USB serial debug port is only usable with 48MHz clock rate, despite documentation suggesting 24MHz.
+// Operation seems fine on 16MHz, but USB serial debug port is only usable with 48MHz clock rate, despite documentation suggesting 24MHz.
 
 // I2C DEVICE MAP:
 //		0x57 USFS Max32660
@@ -131,6 +137,11 @@ char VersionDate[] = "19/11/2022";
 #include "HAL_Time.h"
 #include "BluetoothConnection.h"
 #include "HAL_SatCom.h"
+#include "astronode.h"
+#include "HAL_Watchdog.h"
+
+
+
 
 HALGPS gps;							// HAL GPS object
 HALServo servo;						// HAL Servo object
@@ -140,6 +151,7 @@ HALPowerMeasure PowerSensor;		// HAL for the voltage and Current measurement
 HALTelemetry Telemetry; 
 HALDisplay Display;
 WaveClass Wave;
+HALSatComms SatComm;				// HAL for Astronode satellite modem
 
 bool UseSimulatedVessel = false;	// flag to disable the GPS and indicate that the current location is simulated 
 									// but keep reading the GPS to get current time.
@@ -183,11 +195,11 @@ static const unsigned long SlowLoggingStartDelay = 30000; // ms 30 seconds start
 static const int TelemetryLoopTime = 100;  //ms 0.5 seconds
 static const unsigned long WingSailMonitorLoopTime = 5000; //ms 5 seconds 
 static const unsigned long WingSailPowerMonitorLoopTime = 600000; //ms 10 minutes 
-static const unsigned long Logging2hrTime = 1800000; // 7200000; // ms 7200 seconds 2 hours -- temp code 1/2 hour
+static const unsigned long Logging2hrTime =  7200000; // ms 7200 seconds 2 hours
 
 long loop_period_us; // microseconds between successive main loop executions
 
-HardwareSerial* Serials[4]; // array for serial ports
+HardwareSerial* Serials[5]; // array for serial ports
 
 // strings used to hold the display messages for the LCD/OLED, required the command "dsp"
 char MessageDisplayLine1[10];
@@ -234,8 +246,9 @@ void SlowLoop(void*) // 5 seconds
 	// Update Sail Settings e.g set the sails in accordance with the current point of sail.
 	wingsail_update();
 
-	// review gps power cycle state
-	gps.updatePowerState();
+	// SatComm.Read();
+
+	Watchdog_Pat();
 }
 
 void MediumLoop(void*)  // 1 second
@@ -297,7 +310,7 @@ void LoggingLoop(void*) 	// 1 second
 	SD_Logging_1s();
 
 	Display.Page(Configuration.DisplayScreenView);
-	//Display.Page('B');
+	//Display.Page('9'); boot display
 
 	// Retrieve any messages from the Bluetooth serial
 	BT_CLI_Process_Message(Configuration.BluetoothPort);
@@ -366,7 +379,7 @@ void LoggingLoop2hr(void*) // 2 hours
 {
 	if (millis() > SlowLoggingStartDelay) // skip the first one by inhibiting a check in the fist 30 seconds
 	{
-		sendSatComVesselState();
+		// SatComm.sendSatComVesselState();
 	}
 }
 
@@ -398,6 +411,7 @@ void setup()
 	Serials[1] = &Serial1; 
 	Serials[2] = &Serial2;
 	Serials[3] = &Serial3;
+	Serials[4] = &Serial4;
 
 	// send start up message to the configured USB Serial Port.
 	Serial.println(F("*** Voyager OS Starting *****"));
@@ -493,10 +507,16 @@ void setup()
 	SD_Logging_Event_Messsage("F_CPU " + String(F_CPU / 1000000) + "MHz");
 	SD_Logging_Event_Messsage("F_BUS " + String(F_BUS / 1000000) + "MHz");
 
+	Serial.println("F_CPU " + String(F_CPU / 1000000) + "MHz");
+	Serial.println("F_BUS " + String(F_BUS / 1000000) + "MHz");
+
+	// SatComm.Init();
+
+	Watchdog_Init(10); // seconds timeout -- pat dog in 5 second loop
+
 	Serial.println(F("*** Voyager OS Pilot is Ready *****"));
 	Serial.println();
 }
-
 
 
 void loop()
@@ -515,6 +535,7 @@ void loop()
 	SchedulerTick(8, &FastMeasurementLoop, FastMeasurementLoopTime);
 	SchedulerTick(9, &LoggingLoop1m, Logging1mTime);
 	SchedulerTick(10, &LoggingLoop2hr, Logging2hrTime);
+
 
 	// update loop timing statistics
 	long micro = micros();

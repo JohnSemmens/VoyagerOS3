@@ -14,7 +14,6 @@
 #include "DisplayStrings.h"
 
 extern StateValuesStruct StateValues;
-//extern RC_IN_Type RC_IN;
 extern NavigationDataType NavData;
 extern configValuesType Configuration;
 extern LoiterStruct LoiterData;
@@ -24,49 +23,6 @@ extern int DecisionEventValue;
 extern int CommandPort;
 extern MissionValuesStruct MissionValues;	// structure holding mission details
 
-//VesselCommandStateType GetCommandStateFromRC_Command_Switch(int RCSwitchPos)
-//{
-//	// Function to translate a RC-In Switch value to a Command State.
-//	// This allows an RC Command Channel to be used to control the command state fo the vessel.
-//	// V1.0 4/10/2016 John Semmens
-//
-//	VesselCommandStateType cs;
-//
-//	switch (RCSwitchPos)
-//	{
-//	case 0: // invalid, hence idle.
-//		cs = vcsIdle;
-//		break;
-//
-//	case 1:
-//		cs = vcsFullManual;
-//		break;
-//
-//	case 2:
-//		cs = vcsPartialManual;
-//		break;
-//
-//	case 3:
-//		cs = vcsFollowMission;
-//		break;
-//	case 4:
-//		cs = vcsReturnToHome;
-//		break;
-//
-//	case 5:
-//		cs = vcsSetHome;
-//		break;
-//
-//	case 9: // no RC Signal
-//		cs = Configuration.FailsafeCommandState;
-//		//cs = vcsLoiter; // set the failsafe to loiter while testing.
-//		break;
-//
-//	default:
-//		cs = vcsIdle;
-//	}
-//	return cs;
-//}
 
 void CommandState_Processor(void)
 {
@@ -77,17 +33,7 @@ void CommandState_Processor(void)
 
 	// V1.1 7/4/2019 updated to better handle entering "loiter Here" by factoring in the current tack.
 
-//	static VesselCommandStateType prev_rc_cs;
-//	VesselCommandStateType rc_cs = GetCommandStateFromRC_Command_Switch(RC_IN.RC_Command_Switch_Position);
-
 	static VesselCommandStateType prev_cs;
-
-	//// if there's a change in the command state coming from the Radio Control input then apply the change.
-	//if (prev_rc_cs != rc_cs)
-	//{
-	//	prev_rc_cs = rc_cs;
-	//	StateValues.CommandState = rc_cs;
-	//}
 
 	// look for changes in command state, against the previous state
 	if (prev_cs != StateValues.CommandState)

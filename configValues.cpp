@@ -12,6 +12,7 @@
 //					Added auto save of default config, if the config version flag is invalidated.
 // V1.9 11/12/2021 added UseGPSInitString
 // V1.10 4/2/2022 added support for different default config settings based on HardWare Config setting.
+// V1.11 22/7/2023 removed GPS power controls.
 
 #include "configValues.h"
 #include <EEPROM.h>
@@ -174,7 +175,7 @@ void Load_Config_default_values(void)
 
 	Configuration.TackingMethod = ManoeuvreType::mtGybe;
 	Configuration.MinimumAngleDownWind = 20; // degrees off dead downwind
-	Configuration.WPCourseHoldRadius = 10; // metres radius from WP - hold course
+	Configuration.WPCourseHoldRadius = 20; // metres radius from WP - hold course , increased to 20m 20/7/2023
 
 	Configuration.RTHTimeManualControl = 300; // seconds  -- 5 min - return to home if time expires with no command in manual control.
 	Configuration.DefaultMaxCTE = 20; // 20 metres. used for Return to Home for example
@@ -229,13 +230,15 @@ void Load_Config_default_values(void)
 
 	Configuration.CTE_CorrectionGain = 20; // °  degrees. apply 20° correction to the CTS when CTE/CTEmax = 1
 
-	Configuration.GPS_PowerMode = GPS_PowerModeType::Auto_DTB;
-	Configuration.DTB_Threshold = 200; // metres - Distance to Boundary threshold. move to low power nav mode when DTB exceeds threshold
-	Configuration.GPS_Max_Sleep_Time = 60;  // seconds - sleep time for GPS while in low power nav mode.
-	Configuration.GPS_Min_Wake_Time = 12;	// seconds - wake time for GPS while in low power nav mode. This must be longer than Settle time.
-	Configuration.GPS_Setttle_Time = 10;  // seconds. Time to wait after GPS location becomes valid before using location data.
-										 // this is required the because the Ebyte GPS is intially a few metres (maybe 10m) off to one side when it wakes.
-										 // it then takes a few seconds to settle into the correct location.
+	//Configuration.GPS_PowerMode = GPS_PowerModeType::Normal;
+	//Configuration.DTB_Threshold = 200; // metres - Distance to Boundary threshold. move to low power nav mode when DTB exceeds threshold
+	//Configuration.GPS_Max_Sleep_Time = 60;  // seconds - sleep time for GPS while in low power nav mode.
+	//Configuration.GPS_Min_Wake_Time = 12;	// seconds - wake time for GPS while in low power nav mode. This must be longer than Settle time.
+	//Configuration.GPS_Setttle_Time = 10;  // seconds. Time to wait after GPS location becomes valid before using location data.
+	//									 // this is required the because the Ebyte GPS is intially a few metres (maybe 10m) off to one side when it wakes.
+	//									 // it then takes a few seconds to settle into the correct location.
+	
+	Configuration.MinimumTackTime = 60; //  seconds hold time between tacks for favoured tack.
 
 	// set default config according to HW Config setting for the following config items.
 	switch (HWConfigNumber)
@@ -268,31 +271,32 @@ void Load_Config_default_values(void)
 		Configuration.TrimTabDefaultAngle = 15; // degrees
 		Configuration.MinimumAngleUpWind = 30; // degrees off head to wind. was 40. 35 seems ok. maybe 30 for V3.0.
 
+		Configuration.SatCommsEnabled = true; // no sat comms on Voyager 2
+
 		strcpy(Configuration.BT_MAC_Address, "113EE2A6E373");
-	//	strcpy(Configuration.BT_MAC_Address, "11899aa11fa1");
 		break;
 
 	case 1:
-		// Voyager 2.5/Voyager 2.6
-		strcpy(Configuration.VesselName, "Voyager 2.6");
+		// Voyager 2.5/Voyager 2.6/Voyager 2.7
+		strcpy(Configuration.VesselName, "Voyager 2.7");
 		Configuration.CompassOffsetAngle = 90; // degrees
 
 		// Compass USFS Max
-		// Cardinal corrections // valaidated as at 5/11/2022
-		Configuration.CompassError000 = +20;
-		Configuration.CompassError090 = -25;
-		Configuration.CompassError180 = +20;
-		Configuration.CompassError270 = +30; // was +60;
+		// Cardinal corrections // valaidated as at 21/7/2023 - using 8 degree True melbourne grid
+		Configuration.CompassError000 = +10;
+		Configuration.CompassError090 = +35;
+		Configuration.CompassError180 = +15;
+		Configuration.CompassError270 = +00; 
 
-		// Wingsail Magnetic Angle Sensor MPU9250 
+		// Wingsail Magnetic Angle Sensor MPU9250  // updated Voyager 2.7  30/7/2023 compromise between looking east and west.
 		// Cardinal corrections
-		Configuration.WingAngleError000 = +3;
-		Configuration.WingAngleError090 = +4;
-		Configuration.WingAngleError180 = +0;
-		Configuration.WingAngleError270 = +9;
+		Configuration.WingAngleError000 = +6;
+		Configuration.WingAngleError090 = +20;
+		Configuration.WingAngleError180 = -8;
+		Configuration.WingAngleError270 = -5;
 		// Scale factors
-		Configuration.WingAngle_mXScale = 5100;
-		Configuration.WingAngle_mYScale = 7000;
+		Configuration.WingAngle_mXScale = 1100;
+		Configuration.WingAngle_mYScale = 4000;
 
 		// Scale and Offset for mapping trim tab angle to the Servo input signal in microseconds
 		Configuration.TrimTabScale = 15; // us/degree.  
@@ -300,8 +304,10 @@ void Load_Config_default_values(void)
 		Configuration.TrimTabDefaultAngle = 15; // degrees
 		Configuration.MinimumAngleUpWind = 35; // degrees off head to wind. was 40. 35 seems ok. maybe 30 for V3.0.
 
-		strcpy(Configuration.BT_MAC_Address, "113EE2A6E37A");
-		//strcpy(Configuration.BT_MAC_Address, "11899aa11fa1");
+		Configuration.SatCommsEnabled = false; // no sat comms on Voyager 2
+
+		//strcpy(Configuration.BT_MAC_Address, "113EE2A6E37A"); // lost at sea 31/3/2023
+		strcpy(Configuration.BT_MAC_Address, "11899aa11fa1");
 		break;
 
 	default:;

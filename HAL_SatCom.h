@@ -9,12 +9,33 @@
 	#include "WProgram.h"
 #endif
 
-void sendSatComVesselState();
+#include "astronode.h"
 
-void sendSatComMissionEvent(int mission_index);
+class HALSatComms
+{
+public:
+	ASTRONODE astronode;
 
-char* strtrim(char* str);
-void strtrim2(char* str);
+	void Init();
+	void Read();
+	uint8_t RSSI;
+	uint32_t timeToNextSat;
+	time_t timeValue;
+	int OutboundMsgCount;
+
+	int TestCounter;
+
+	uint8_t OutboundMsg[50]; // 93 bytes is a reasonable upper limit in payload size, but smaller, the better.
+
+	String LastCommand;
+
+	void sendSatComVesselState();
+	void sendSatComMissionEvent(int mission_index);
+
+	void QueueMessage(uint8_t *OutboundMsg, uint8_t OutboundMsgSize);
+
+	EquipmentStatusType EquipmentStatus;
+};
 
 #endif
 
