@@ -203,8 +203,6 @@ void Load_Config_default_values(void)
 	Configuration.DualRudder = false; // Single Rudder only
 
 	Configuration.LoRaPort = 3; // Serial Port3
-	Configuration.SatCommsPort = 4; // serial port 4
-	Configuration.GPSPort = 1; // serial port 1
 	Configuration.BluetoothPort = 2; // Serial Port2
 
 	Configuration.LoRaPortBaudRate = 9600; // Baud Rate  9600 Baud
@@ -273,6 +271,9 @@ void Load_Config_default_values(void)
 
 		Configuration.SatCommsEnabled = true; // no sat comms on Voyager 2
 
+		Configuration.SatCommsPort = 1; // serial port 4
+		Configuration.GPSPort = 5; // serial port 1
+
 		strcpy(Configuration.BT_MAC_Address, "113EE2A6E373");
 		break;
 
@@ -305,6 +306,9 @@ void Load_Config_default_values(void)
 		Configuration.MinimumAngleUpWind = 35; // degrees off head to wind. was 40. 35 seems ok. maybe 30 for V3.0.
 
 		Configuration.SatCommsEnabled = false; // no sat comms on Voyager 2
+		Configuration.SatCommsPort = 4; // serial port 4 -- not used.
+		Configuration.GPSPort = 1; // serial port 1
+
 
 		//strcpy(Configuration.BT_MAC_Address, "113EE2A6E37A"); // lost at sea 31/3/2023
 		strcpy(Configuration.BT_MAC_Address, "11899aa11fa1");

@@ -33,6 +33,11 @@ extern HALIMU imu;
 extern StateValuesStruct StateValues;
 extern configValuesType Configuration;
 
+#define TX_SIZE 512
+uint8_t tx_buffer[TX_SIZE];
+#define RX_SIZE 512
+uint8_t rx_buffer[RX_SIZE];
+
 // Astronode configuration
 //#define ASTRONODE_SERIAL Serial4
 //#define ASTRONODE_SERIAL_BAUDRATE 9600
@@ -48,11 +53,9 @@ extern configValuesType Configuration;
 
 void HALSatComms::Init()
 {
-	pinMode(31, INPUT_PULLDOWN);
-
 	if (Configuration.SatCommsEnabled)
 	{
-		Serial.print("*** Initialising SatComms Port: (S4) ");
+		Serial.print("*** Initialising SatComms Port:");
 		Serial.print(Configuration.SatCommsPort);
 		Serial.print(", ");
 		Serial.print(Configuration.SatCommsPortBaudRate);
@@ -60,18 +63,10 @@ void HALSatComms::Init()
 
 		//Initialize terminal // (*Serials[Configuration.SatCommsPort])
 		(*Serials[Configuration.SatCommsPort]).begin(Configuration.SatCommsPortBaudRate);
-
-		Serial4.begin(9600);
-#define TX_SIZE 512
-		uint8_t tx_buffer[TX_SIZE];
 		(*Serials[Configuration.SatCommsPort]).addMemoryForWrite(tx_buffer, TX_SIZE);
-
-#define RX_SIZE 512
-		uint8_t rx_buffer[RX_SIZE];
 		(*Serials[Configuration.SatCommsPort]).addMemoryForRead(rx_buffer, RX_SIZE);
 
-
-		if (astronode.begin(Serial4) == ANS_STATUS_SUCCESS)
+		if (astronode.begin((*Serials[Configuration.SatCommsPort])) == ANS_STATUS_SUCCESS)
 		{ // good
 			EquipmentStatus = EquipmentStatusType::Found;
 		}
@@ -81,10 +76,10 @@ void HALSatComms::Init()
 			EquipmentStatus = EquipmentStatusType::NotFound;
 		}
 
-	//	Serial.print("read_module_state:");
-	//	Serial.println(astronode.read_module_state());
-	//	Serial.print("read_module_state:");
-	//	Serial.println(astronode.read_module_state());
+		//Serial.print("read_module_state:");
+		//Serial.println(astronode.read_module_state());
+		//Serial.print("read_module_state:");
+		//Serial.println(astronode.read_module_state());
 
 		astronode.configuration_write(ASTRONODE_WITH_PLD_ACK,
 			ASTRONODE_WITH_GEO_LOC,
@@ -123,41 +118,43 @@ void HALSatComms::Read()
 {
 	if (Configuration.SatCommsEnabled)
 	{
+		//Query HK and RTC
+		uint32_t rtc_time;
 		//Serial.print("read_performance_counter:");
 		//Serial.println(astronode.read_performance_counter());
 
 		Serial.print("read_module_state:");
 		Serial.println(astronode.read_module_state());
 
-		//Serial.print("read_environment_details:");
-		//Serial.println(astronode.read_environment_details());
+		Serial.print("read_environment_details:");
+		Serial.println(astronode.read_environment_details());
 
 		//Serial.print("read_last_contact_details:");
 		//Serial.println(astronode.read_last_contact_details());
 
-		//Query HK and RTC
-		uint32_t rtc_time;
-		//if (astronode.read_performance_counter() == ANS_STATUS_SUCCESS &&
-		//	astronode.read_module_state() == ANS_STATUS_SUCCESS &&
-		//	astronode.read_environment_details() == ANS_STATUS_SUCCESS &&
-		//	astronode.read_last_contact_details() == ANS_STATUS_SUCCESS &&
-		//	astronode.rtc_read(&rtc_time) == ANS_STATUS_SUCCESS)
-		//{
-		//	// read status flags etc.
-		//	RSSI=astronode.end_struct.last_sat_search_peak_rssi;
-		//	astronode.read_next_contact_opportunity(&timeToNextSat);
+		Serial.print("rtc_read:");
+		Serial.println(astronode.rtc_read(&rtc_time));
 
-		//	OutboundMsgCount = astronode.mst_struct.msg_in_queue;
+		if (//astronode.read_performance_counter() == ANS_STATUS_SUCCESS &&
+			astronode.read_module_state() == ANS_STATUS_SUCCESS &&
+			astronode.read_environment_details() == ANS_STATUS_SUCCESS &&
+			//astronode.read_last_contact_details() == ANS_STATUS_SUCCESS &&
+			astronode.rtc_read(&rtc_time) == ANS_STATUS_SUCCESS)
+		{
+			// read status flags etc.
+			RSSI=astronode.end_struct.last_sat_search_peak_rssi; // read_environment_details
+			astronode.read_next_contact_opportunity(&timeToNextSat);
+			OutboundMsgCount = astronode.mst_struct.msg_in_queue;//read_module_state
 
-		//	//timeValue = rtc_time - 946684800; // difference between unix epoch and y2k epoch <---- Arduino only
-		//	timeValue = rtc_time; //  Pico PI. no need for offset
-		//	uint32_t TimeZoneOffset = (uint32_t)3600 * Configuration.timezone_offset;
-		//	timeValue += TimeZoneOffset;
-		//}
-		//else
-		//{
-		//	OutboundMsgCount = -1;
-		//}
+			//timeValue = rtc_time - 946684800; // difference between unix epoch and y2k epoch <---- Arduino only
+			timeValue = rtc_time; //  Pico PI. no need for offset
+			uint32_t TimeZoneOffset = (uint32_t)3600 * Configuration.timezone_offset;
+			timeValue += TimeZoneOffset;
+		}
+		else
+		{
+			OutboundMsgCount = -1;
+		}
 
 		//Query and process events
 		uint8_t event_type;

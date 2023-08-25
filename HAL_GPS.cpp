@@ -26,7 +26,7 @@ extern sim_vessel simulated_vessel;
 
 extern time_t GPSTime;
 
-extern byte GPSEnablePin;
+//extern byte GPSEnablePin;
 
 // The TinyGPS++ object
 TinyGPSPlus t_gps;

@@ -30,4 +30,6 @@ void Watchdog_Pat()
 	WDOG_REFRESH = 0xA602;
 	WDOG_REFRESH = 0xB480;
 	interrupts()
+
+	//Serial.print("Pat dog."); Serial.print(second()); Serial.println("s.");
 }

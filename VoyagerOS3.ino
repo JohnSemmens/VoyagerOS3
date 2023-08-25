@@ -82,10 +82,11 @@
 // V3.2.29 29/7/2023 Updated hold radius handling and calculation.
 // V3.2.30 6/8/2023 Add Astrocast Astronode Sat Comms
 // V3.2.31 11/8/2023 Added Watchdog
+// V3.2.32 25/8/2023 Inhibit SatComms, Prep for Voyager 2.7 for sea.
 
 
-char Version[] = "vOS3.2.31";
-char VersionDate[] = "12/8/2023";
+char Version[] = "vOS3.2.32";
+char VersionDate[] = "25/8/2023";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0
@@ -176,7 +177,7 @@ DecisionEventReasonType DecisionEventReason;	// used in event based logging and 
 int DecisionEventValue;							// this a value relevant to an event
 int DecisionEventValue2;						// this a second value  relevant to an event
 
-NavigationDataType NavData; // stucture containing the current navigational data, including loc, next and prev waypoints, ll bearings and angle
+NavigationDataType NavData; // stucture containing the current navigational data, including loc, next and prev waypoints, all bearings and angles
 
 bool TurnHeadingInitialised = false;
 
@@ -224,7 +225,7 @@ int LastParameterIndex = 0;
 
 byte BluetoothStatePin = 36; 
 BTStateType BTState = Idle;
-byte GPSEnablePin = 14;
+//byte GPSEnablePin = 14;
 
 void SlowLoop(void*) // 5 seconds
 {
@@ -234,7 +235,6 @@ void SlowLoop(void*) // 5 seconds
 
 	// Update the Navigation Object data
 	// update the Range, Bearing and Cross Track Error to next waypoint to establish required heading 
-	// and check if the current mission command has been completed, and advance the mission index if required.
 	NavigationUpdate_SlowData();
 
 	// calculate the best course to steer, including all tacking decisions this sets NavData.CTS
@@ -246,15 +246,13 @@ void SlowLoop(void*) // 5 seconds
 	// Update Sail Settings e.g set the sails in accordance with the current point of sail.
 	wingsail_update();
 
-	// SatComm.Read();
+	//SatComm.Read();
 
 	Watchdog_Pat();
 }
 
 void MediumLoop(void*)  // 1 second
 {
-	// time_update();
-
 	// increment the tack timer
 	NavData.TackDuration = NavData.TackDuration + 1;
 
@@ -311,7 +309,8 @@ void LoggingLoop(void*) 	// 1 second
 
 	Display.Page(Configuration.DisplayScreenView);
 	//Display.Page('9'); boot display
-
+	//Display.Page('u'); //satcomm display
+		
 	// Retrieve any messages from the Bluetooth serial
 	BT_CLI_Process_Message(Configuration.BluetoothPort);
 
@@ -422,7 +421,7 @@ void setup()
 	Serial.print(F("HW Config Number: #"));
 	ReadHWConfigNumber();
 	Serial.print(HWConfigNumber);
-	HWConfigNumber == 0 ? Serial.print(F(" Voyager 3.0")) : Serial.print(F(" Voyager 2.5"));
+	HWConfigNumber == 0 ? Serial.print(F(" Voyager 3.0")) : Serial.print(F(" Voyager 2.7"));
 	Serial.println();
 
 	// load the configuration from the EEPROM and validate the version of the stored structure
@@ -512,7 +511,7 @@ void setup()
 
 	// SatComm.Init();
 
-	Watchdog_Init(10); // seconds timeout -- pat dog in 5 second loop
+	Watchdog_Init(20); // seconds timeout -- pat dog in 5 second loop
 
 	Serial.println(F("*** Voyager OS Pilot is Ready *****"));
 	Serial.println();
@@ -535,7 +534,6 @@ void loop()
 	SchedulerTick(8, &FastMeasurementLoop, FastMeasurementLoopTime);
 	SchedulerTick(9, &LoggingLoop1m, Logging1mTime);
 	SchedulerTick(10, &LoggingLoop2hr, Logging2hrTime);
-
 
 	// update loop timing statistics
 	long micro = micros();
