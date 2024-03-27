@@ -274,7 +274,7 @@ void Load_Config_default_values(void)
 		Configuration.SatCommsPort = 1; // serial port 4
 		Configuration.GPSPort = 5; // serial port 1
 
-		strcpy(Configuration.BT_MAC_Address, "113EE2A6E373");
+		strcpy(Configuration.BT_MAC_Address, "113EE2A6E373"); // Voyager 3 sail
 		break;
 
 	case 1:
@@ -284,10 +284,12 @@ void Load_Config_default_values(void)
 
 		// Compass USFS Max
 		// Cardinal corrections // valaidated as at 21/7/2023 - using 8 degree True melbourne grid
-		Configuration.CompassError000 = +10;
-		Configuration.CompassError090 = +35;
+		// Cardinal corrections // valaidated as at 26/8/2023 - using 8 degree True melbourne grid with board from voyager 3.0
+		// reminder: these values represent the observed Error
+		Configuration.CompassError000 = +11;
+		Configuration.CompassError090 = +19;
 		Configuration.CompassError180 = +15;
-		Configuration.CompassError270 = +00; 
+		Configuration.CompassError270 = +0; 
 
 		// Wingsail Magnetic Angle Sensor MPU9250  // updated Voyager 2.7  30/7/2023 compromise between looking east and west.
 		// Cardinal corrections
@@ -312,6 +314,7 @@ void Load_Config_default_values(void)
 
 		//strcpy(Configuration.BT_MAC_Address, "113EE2A6E37A"); // lost at sea 31/3/2023
 		strcpy(Configuration.BT_MAC_Address, "11899aa11fa1");
+		//strcpy(Configuration.BT_MAC_Address, "113EE2A6E373"); // Voyager 3 sail
 		break;
 
 	default:;

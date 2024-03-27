@@ -83,10 +83,12 @@
 // V3.2.30 6/8/2023 Add Astrocast Astronode Sat Comms
 // V3.2.31 11/8/2023 Added Watchdog
 // V3.2.32 25/8/2023 Inhibit SatComms, Prep for Voyager 2.7 for sea.
+// V3.2.33 28/8/2023 Add a call to retreive wingsail power values at time of BT connection, rather than waiting 10 minutes.
+//					 Added "AT" command as at start of the Bluetooth initialisation.
 
 
-char Version[] = "vOS3.2.32";
-char VersionDate[] = "25/8/2023";
+char Version[] = "vOS3.2.33";
+char VersionDate[] = "28/8/2023";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0

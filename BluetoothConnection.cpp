@@ -17,8 +17,13 @@ extern WingSailType WingSail;
 void Bluetooth_Init(int BluetoothPort)
 {
 	// called from setup()
-	Serial.print("*** Initialising Bluetooth Serial: ");
-	Serial.println(BluetoothPort);
+	Serial.println("*** Initialising Bluetooth Serial...");
+	Serial.print("Serial Port ");
+	Serial.print(BluetoothPort);
+	Serial.print(", ");
+	Serial.print(Configuration.BTPortBaudRate);
+	Serial.println("Baud.");
+
 	(*Serials[BluetoothPort]).begin(Configuration.BTPortBaudRate);
 	pinMode(BluetoothStatePin, INPUT_PULLUP);
 	Serial.println("*** Bluetooth Serial Initialised.");
@@ -99,8 +104,12 @@ void BluetoothManageConnection(int BluetoothPort)
 			SD_Logging_Event_Messsage(BTStatus);
 
 
-			(*Serials[Configuration.BluetoothPort]).println("");
-			(*Serials[Configuration.BluetoothPort]).println(F("ver"));
+			//CheckWingSailVersion();
+
+			CheckWingSailPower();
+
+			//(*Serials[Configuration.BluetoothPort]).println("");
+			//(*Serials[Configuration.BluetoothPort]).println(F("ver"));
 		}
 	}
 	BTStatePrev = BTState;
@@ -116,30 +125,56 @@ void BluetoothInitialiseConnection(int BluetoothPort)
 	switch (BTInitStep)
 	{
 	case 0:
-		(*Serials[BluetoothPort]).println("AT+DEFAULT");
+		(*Serials[BluetoothPort]).println("AT");
 		BTInitStep = 1;
 		BTState = Initialising;
 
 		Serial.print(F("BT:"));
 		Serial.print(GetBTStatus(BTState));
 		Serial.print(",");
-		Serial.println(BTInitStep);
+		Serial.print(BTInitStep);
+		Serial.print(":Serial");
+		Serial.print(BluetoothPort);
+		Serial.print(":");
+		Serial.println("AT");
 		break;
 	case 1:
-		(*Serials[BluetoothPort]).println(F("AT+ROLE1"));
+		(*Serials[BluetoothPort]).println("AT+DEFAULT");
 		BTInitStep = 2;
+		BTState = Initialising;
 
 		Serial.print(F("BT:"));
 		Serial.print(GetBTStatus(BTState));
 		Serial.print(",");
-		Serial.println(BTInitStep);
+		Serial.print(BTInitStep);
+		Serial.print(":Serial");
+		Serial.print(BluetoothPort);
+		Serial.print(":");
+		Serial.println("AT+DEFAULT");
 		break;
 	case 2:
+		(*Serials[BluetoothPort]).println(F("AT+ROLE1"));
+		BTInitStep = 3;
+
+		Serial.print(F("BT:"));
+		Serial.print(GetBTStatus(BTState));
+		Serial.print(",");
+		Serial.print(BTInitStep);
+		Serial.print(":Serial");
+		Serial.print(BluetoothPort);
+		Serial.print(":");
+		Serial.println(F("AT+ROLE1"));
+		break;
+	case 3:
 		(*Serials[BluetoothPort]).println(F("AT+RESET"));
 		BTState = Initialised;
 
 		Serial.print(F("BT:"));
-		Serial.println(GetBTStatus(BTState));
+		Serial.print(GetBTStatus(BTState));
+		Serial.print(":Serial");
+		Serial.print(BluetoothPort);
+		Serial.print(":");
+		Serial.println(F("AT+RESET"));
 		break;
 	default:
 		BTInitStep = 0;

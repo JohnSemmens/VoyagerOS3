@@ -13,7 +13,7 @@
 #include "CommandState_Processor.h"
 #include "HAL_GPS.h"
 
-static const int EEPROM_Storage_Version_Const = 53;   // change this number to force config to be cleared and revert to default.
+static const int EEPROM_Storage_Version_Const = 56;   // change this number to force config to be cleared and revert to default.
 
 struct configValuesType {
 	byte EEPROM_Storage_Version = EEPROM_Storage_Version_Const; // stored object version. this is to test if the data being retrieve is valid with reference to this version. 
