@@ -3,9 +3,10 @@
 // V1.01 4/8/2021 updated to support full addressing
 
 #include "TelemetryMessages.h"
+#include "HAL.h"
 #include "Navigation.h"
 #include "HAL_IMU.h"
-#include "TelemetryLogging.h"
+//#include "TelemetryLogging.h"
 #include "Wingsail.h"
 #include "Mission.h"
 #include "Wingsail.h"
@@ -307,7 +308,7 @@ void SendMessage(int CommandPort, TelMessageType msg)
 
 	case TelMessageType::CCG:
 		(*Serials[CommandPort]).print(F("MSG,Compass Status:"));
-		(*Serials[CommandPort]).print(imu.Algorithm_Status);
+		//(*Serials[CommandPort]).print(imu.Algorithm_Status);
 		(*Serials[CommandPort]).println();
 		MessageArray[msg] = 0;
 		break;

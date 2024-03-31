@@ -80,13 +80,9 @@
     <ClCompile Include="Adafruit_SSD1306.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Alarms.cpp">
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="AP_Math.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="astronode.cpp" />
     <ClCompile Include="BluetoothConnection.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -141,9 +137,6 @@
     <ClCompile Include="HAL_PowerMeasurement.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="HAL_SatCom.cpp">
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="HAL_SDCard.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -160,13 +153,7 @@
     <ClCompile Include="HAL_WingAngle.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="I2Cdev.cpp">
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="i2c_t3.cpp">
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="IMU.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="init_t3.cpp">
@@ -190,6 +177,7 @@
     <ClCompile Include="LoRa_E32.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="MagneticSensorLsm303.cpp" />
     <ClCompile Include="Mission.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -214,9 +202,6 @@
     <ClCompile Include="SDL_Arduino_INA3221.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Sensor_cal.cpp">
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="sim_vessel.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -224,9 +209,6 @@
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="Steering.cpp">
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="TelemetryLogging.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="TelemetryMessages.cpp">
@@ -238,9 +220,6 @@
     <ClCompile Include="TinyGPS++.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="USFSMAX.cpp">
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="utility\NXP_SDHC.cpp" />
     <ClCompile Include="utility\Sd2Card.cpp" />
     <ClCompile Include="utility\SdFile.cpp" />
@@ -250,9 +229,6 @@
     </ClCompile>
     <ClCompile Include="VoyagerOS3.ino">
       <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="WaveMeasurement.cpp">
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="WearTracking.cpp">
@@ -274,10 +250,6 @@
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Alarms.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="AP_Math.h">
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
@@ -294,15 +266,7 @@
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="config.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="configValues.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="def.h">
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -319,10 +283,6 @@
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="gfxfont.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Globals.h">
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -346,10 +306,6 @@
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="HAL_SatCom.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="HAL_SDCard.h">
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
@@ -370,15 +326,7 @@
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="I2Cdev.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="i2c_t3.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="IMU.h">
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -446,10 +394,6 @@
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Sensor_cal.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="sim_vessel.h">
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
@@ -466,10 +410,6 @@
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="TelemetryLogging.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="TelemetryMessages.h">
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
@@ -482,23 +422,7 @@
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Types.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="USFSMAX.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="vector.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
     <ClCompile Include="vector2.h">
-      <FileType>CppCode</FileType>
-      <DeploymentContent>true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="WaveMeasurement.h">
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -514,8 +438,8 @@
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClInclude Include="astronode.h" />
     <ClInclude Include="HAL_Watchdog.h" />
+    <ClInclude Include="MagneticSensorLsm303.h" />
     <ClInclude Include="utility\FatStructs.h" />
     <ClInclude Include="utility\ioreg.h" />
     <ClInclude Include="utility\NXP_SDHC.h" />
@@ -537,7 +461,7 @@
     <ValidateArchitecture>false</ValidateArchitecture>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <IncludePath>$(ProjectDir)..\VoyagerOS3;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\Servo;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\SPI;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\Servo\utility;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\SPI\utility;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\EEPROM;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\EEPROM\utility;$(ProjectDir)..\..\..\..\..\\Users\\john.ACS\\AppData\\Local\\arduino15\\packages\\teensy\\hardware\\avr\\1.58.1\\cores\\teensy3;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1\arm-none-eabi\thumb\v7e-m+fp\hard;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1\backward;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\lib\gcc\arm-none-eabi\11.3.1\include;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\lib\gcc\arm-none-eabi\11.3.1\include-fixed;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\Servo;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\SPI;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\EEPROM</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\Servo;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\SPI;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\Servo\utility;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\SPI\utility;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\EEPROM;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\EEPROM\utility;$(ProjectDir)..\..\..\..\..\\Users\\john.ACS\\AppData\\Local\\arduino15\\packages\\teensy\\hardware\\avr\\1.58.1\\cores\\teensy3;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1\arm-none-eabi\thumb\v7e-m+fp\hard;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1\backward;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\lib\gcc\arm-none-eabi\11.3.1\include;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\lib\gcc\arm-none-eabi\11.3.1\include-fixed;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include</IncludePath>
     <RemoteCCompileToolExe>$(ProjectDir)..\..\..\..\..\\Users\\john.ACS\\AppData\\Local\\arduino15\\packages\\teensy\\tools\\teensy-compile\\11.3.1\arm\bin\arm-none-eabi-g++</RemoteCCompileToolExe>
     <RemoteCppCompileToolExe>$(ProjectDir)..\..\..\..\..\\Users\\john.ACS\\AppData\\Local\\arduino15\\packages\\teensy\\tools\\teensy-compile\\11.3.1\arm\bin\arm-none-eabi-g++</RemoteCppCompileToolExe>
     <ValidateArchitecture>false</ValidateArchitecture>
@@ -550,10 +474,10 @@
       <CLanguageStandard>gnu11</CLanguageStandard>
       <CAdditionalWarning />
       <CppAdditionalWarning />
-      <ForcedIncludeFiles>$(ProjectDir)..\..\..\..\..\program files\microsoft visual studio\2022\professional\common7\ide\extensions\2mst5tvu.4gh\Micro Platforms\default\vm-intelli-pre.h;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\Temp\VMBuilds\VoyagerOS3\teensy36\Debug\.vmintelli\cdcfd5b9a2d65a2995c13426d2052b8b\vm-intelli-gcc-defines.h;$(ProjectDir)..\..\..\..\..\program files\microsoft visual studio\2022\professional\common7\ide\extensions\2mst5tvu.4gh\Micro Platforms\default\vm-intelli-post.h;$(ProjectDir)__vm\.VoyagerOS3.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>$(ProjectDir)..\..\..\..\..\program files\microsoft visual studio\2022\professional\common7\ide\extensions\2mst5tvu.4gh\Micro Platforms\default\vm-intelli-pre.h;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\Temp\VMBuilds\VoyagerOS3\teensy36\Debug\.vmintelli\91f0e6137eeffdab0796e224b7e8138a\vm-intelli-gcc-defines.h;$(ProjectDir)..\..\..\..\..\program files\microsoft visual studio\2022\professional\common7\ide\extensions\2mst5tvu.4gh\Micro Platforms\default\vm-intelli-post.h;$(ProjectDir)__vm\.VoyagerOS3.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <UndefineAllPreprocessorDefinitions>true</UndefineAllPreprocessorDefinitions>
       <IgnoreStandardIncludePath>true</IgnoreStandardIncludePath>
-      <PreprocessorDefinitions>_VMICRO_INTELLISENSE;__TEENSY3_mk66fx1m0__;__TEENSY3_MK66FX1M0__;_VMDEBUG=1;__MK66FX1M0__;TEENSYDUINO=158;ARDUINO=108016;ARDUINO_TEENSY36;F_CPU=16000000;USB_SERIAL;LAYOUT_US_ENGLISH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_VMICRO_INTELLISENSE;__TEENSY3_mk66fx1m0__;__TEENSY3_MK66FX1M0__;_VMDEBUG=1;__MK66FX1M0__;TEENSYDUINO=158;ARDUINO=108016;ARDUINO_TEENSY36;F_CPU=48000000;USB_SERIAL;LAYOUT_US_ENGLISH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -572,7 +496,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\VoyagerOS3;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\Servo;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\SPI;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\Servo\utility;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\SPI\utility;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\EEPROM;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\EEPROM\utility;$(ProjectDir)..\..\..\..\..\\Users\\john.ACS\\AppData\\Local\\arduino15\\packages\\teensy\\hardware\\avr\\1.58.1\\cores\\teensy3;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1\arm-none-eabi\thumb\v7e-m+fp\hard;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1\backward;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\lib\gcc\arm-none-eabi\11.3.1\include;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\lib\gcc\arm-none-eabi\11.3.1\include-fixed;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\Servo;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\SPI;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\EEPROM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\Servo;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\SPI;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\Servo\utility;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\SPI\utility;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\EEPROM;$(ProjectDir)..\..\..\..\..\Users\john.ACS\AppData\Local\arduino15\packages\teensy\hardware\avr\1.58.1\libraries\EEPROM\utility;$(ProjectDir)..\..\..\..\..\\Users\\john.ACS\\AppData\\Local\\arduino15\\packages\\teensy\\hardware\\avr\\1.58.1\\cores\\teensy3;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1\arm-none-eabi\thumb\v7e-m+fp\hard;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include\c++\11.3.1\backward;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\lib\gcc\arm-none-eabi\11.3.1\include;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\lib\gcc\arm-none-eabi\11.3.1\include-fixed;$(ProjectDir)..\..\..\..\..\users\john.acs\appdata\local\arduino15\packages\teensy\tools\teensy-compile\11.3.1\arm\arm-none-eabi\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <GccToolChain>$(ProjectDir)..\..\..\..\..\\Users\\john.ACS\\AppData\\Local\\arduino15\\packages\\teensy\\tools\\teensy-compile\\11.3.1\arm\bin\arm-none-eabi-g++</GccToolChain>
       <CppLanguageStandard>gnu++1y</CppLanguageStandard>
       <CLanguageStandard>gnu11</CLanguageStandard>

@@ -28,12 +28,6 @@
     <ClCompile Include="Adafruit_SSD1306.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Alarms.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Alarms.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="AP_Math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -64,16 +58,10 @@
     <ClCompile Include="CommandState_Processor.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="config.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="configValues.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="configValues.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="def.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="dir_t3.cpp">
@@ -109,9 +97,6 @@
     <ClCompile Include="glcdfont.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Globals.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="HAL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -140,12 +125,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HAL_PowerMeasurement.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HAL_SatCom.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HAL_SatCom.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="HAL_SDCard.cpp">
@@ -178,22 +157,10 @@
     <ClCompile Include="HAL_WingAngle.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="I2Cdev.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="I2Cdev.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="i2c_t3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="i2c_t3.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IMU.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IMU.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="init_t3.cpp">
@@ -289,12 +256,6 @@
     <ClCompile Include="SD_t3.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sensor_cal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sensor_cal.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="sim_vessel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -316,12 +277,6 @@
     <ClCompile Include="Steering.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="TelemetryLogging.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TelemetryLogging.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="TelemetryMessages.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -340,28 +295,10 @@
     <ClCompile Include="TinyGPS++.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Types.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="USFSMAX.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="USFSMAX.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vector.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="vector2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vector2.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WaveMeasurement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WaveMeasurement.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="WearTracking.cpp">
@@ -394,10 +331,10 @@
     <ClCompile Include="utility\SdVolume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="astronode.cpp">
+    <ClCompile Include="HAL_Watchdog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HAL_Watchdog.cpp">
+    <ClCompile Include="MagneticSensorLsm303.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -432,10 +369,10 @@
     <ClInclude Include="utility\SdInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="astronode.h">
+    <ClInclude Include="HAL_Watchdog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HAL_Watchdog.h">
+    <ClInclude Include="MagneticSensorLsm303.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

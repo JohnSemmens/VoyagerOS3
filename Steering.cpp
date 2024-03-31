@@ -13,7 +13,6 @@
 #include "Navigation.h"
 #include "PID_v1.h"
 #include "HAL_GPS.h"
-#include "USFSmax.h"
 #include "Loiter.h"
 #include "WearTracking.h"
 #include "HAL_Servo.h"

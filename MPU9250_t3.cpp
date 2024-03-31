@@ -109,7 +109,7 @@ void MPU9250::readMagData(int16_t * destination)
 int16_t MPU9250::readTempData()
 {
   uint8_t rawData[2];  // x/y/z gyro register data stored here
-  readBytes( MPU9250_ADDRESS, TEMP_OUT_H, 2, &rawData[0]);  // Read the two raw data registers sequentially into data array 
+  readBytes( MPU9250_ADDRESS, TEMP_OUT_H_MPU9250, 2, &rawData[0]);  // Read the two raw data registers sequentially into data array 
   return ((int16_t)rawData[0] << 8) | rawData[1];  // Turn the MSB and LSB into a 16-bit value
 }
 
@@ -362,7 +362,7 @@ void MPU9250::MPU9250SelfTest(float * destination) // Should return percent devi
 {
   uint8_t rawData[6] = {0, 0, 0, 0, 0, 0};
   uint8_t selfTest[6];
-  int16_t gAvg[3], aAvg[3], aSTAvg[3], gSTAvg[3];
+  int16_t gAvg[3] = { 0 }, aAvg[3] = { 0 }, aSTAvg[3] = { 0 }, gSTAvg[3] = { 0 };
   float factoryTrim[6];
   uint8_t FS = 0;
    

@@ -85,10 +85,12 @@
 // V3.2.32 25/8/2023 Inhibit SatComms, Prep for Voyager 2.7 for sea.
 // V3.2.33 28/8/2023 Add a call to retreive wingsail power values at time of BT connection, rather than waiting 10 minutes.
 //					 Added "AT" command as at start of the Bluetooth initialisation.
+// V3.3.34 28/3/2024 Remove SatComms from vOS3. Update SD logging, add SSSS counter, consolidate logged values into NAV. 
+// V3.3.35 29/3/2024 Remove USFSMax. Add LSM303. Adjust TWD calc. 
+// V3.3.36 31/3/2024 Check-in. Ready for sea. Remove USFSMax. Add LSM303. Adjust TWD calc. Remove SatComms from vOS3. SD logging: add SSSS counter, consolidate logged values into NAV. 
 
-
-char Version[] = "vOS3.2.33";
-char VersionDate[] = "28/8/2023";
+char Version[] = "vOS3.3.6";
+char VersionDate[] = "31/3/2024";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0
@@ -96,9 +98,13 @@ char VersionDate[] = "28/8/2023";
 // Operation seems fine on 16MHz, but USB serial debug port is only usable with 48MHz clock rate, despite documentation suggesting 24MHz.
 
 // I2C DEVICE MAP:
-//		0x57 USFS Max32660
+//		I2C #0 - local
 //		0x3C OLED Display
 //		0x40 INA3221a	Current/Voltage Sensor
+// 		0x19 (25d) LSM303 accelerometer  
+//		0x1E (30d) LSM303 magnetic sensor 
+
+//		I2C #1 - outside
 //		0x68 MPU9250/MPU9255 Wing Angle sensor
 //		
 
@@ -108,6 +114,7 @@ char VersionDate[] = "28/8/2023";
 
 #include "HAL_Display.h"
 #include "HAL_GPS.h"
+#include "MagneticSensorLsm303.h"
 #include "HAL_IMU.h"
 #include "HAL_PowerMeasurement.h"
 #include "HAL_SDCard.h"
@@ -132,15 +139,11 @@ char VersionDate[] = "28/8/2023";
 #include "Wingsail.h"
 #include "WearTracking.h"
 #include "TelemetryMessages.h"
-#include "TelemetryLogging.h"
 #include "sim_vessel.h"
 #include "sim_weather.h"
-#include "WaveMeasurement.h"
 #include "TimeLib.h"
 #include "HAL_Time.h"
 #include "BluetoothConnection.h"
-#include "HAL_SatCom.h"
-#include "astronode.h"
 #include "HAL_Watchdog.h"
 
 
@@ -153,8 +156,7 @@ HALWingAngle WingAngleSensor;		// HAL WingSail Angle Sensor object
 HALPowerMeasure PowerSensor;		// HAL for the voltage and Current measurement
 HALTelemetry Telemetry; 
 HALDisplay Display;
-WaveClass Wave;
-HALSatComms SatComm;				// HAL for Astronode satellite modem
+//WaveClass Wave;
 
 bool UseSimulatedVessel = false;	// flag to disable the GPS and indicate that the current location is simulated 
 									// but keep reading the GPS to get current time.
@@ -164,6 +166,7 @@ sim_weather simulated_weather;		// Simulated weather object
 
 time_t GPSTime;
 
+uint32_t SSSS;						// Second counter from boot up.
 uint32_t Minute;					// Minute counter from boot up.
 String LogFileName;					// current log file name
 bool RTC_updated = false;
@@ -227,7 +230,6 @@ int LastParameterIndex = 0;
 
 byte BluetoothStatePin = 36; 
 BTStateType BTState = Idle;
-//byte GPSEnablePin = 14;
 
 void SlowLoop(void*) // 5 seconds
 {
@@ -247,8 +249,6 @@ void SlowLoop(void*) // 5 seconds
 
 	// Update Sail Settings e.g set the sails in accordance with the current point of sail.
 	wingsail_update();
-
-	//SatComm.Read();
 
 	Watchdog_Pat();
 }
@@ -297,8 +297,9 @@ void LoggingLoop(void*) 	// 1 second
 	// V1.1 19/10/2018 added test for presence of command port.
 	// V1.2 22/12/2018 added reading of Voltage/Current Sensor
 	// V1.3 21/2/2019 added update of usage stats object
-	// V1.4 9/1/2022 added Minute
+	// V1.4 9/1/2022 added Minute, changed to SSSS
 
+	SSSS = millis() / 1000;
 	Minute = millis() / 60000;
 
 	// Read the INA3221a I2C Triple Voltage/Current Sensor
@@ -375,22 +376,12 @@ void WingSailPowerMonitorLoop(void*) // 10 minutes
 	}
 }
 
-// logging loop for sat comms reporting
-void LoggingLoop2hr(void*) // 2 hours 
-{
-	if (millis() > SlowLoggingStartDelay) // skip the first one by inhibiting a check in the fist 30 seconds
-	{
-		// SatComm.sendSatComVesselState();
-	}
-}
 
 void FastMeasurementLoop(void*) // 200ms
 {
-	Wave.update(imu.Baro);  // update the wave measurement calculations
-
 	gps.Read();			// update location data from the GPS
 
-	// get the postion of the wingsail. 
+	// get the position of the wingsail. 
 	WingAngleSensor.Read();
 	WingSail.Angle = WingAngleSensor.Angle;
 
@@ -496,7 +487,6 @@ void setup()
 	}
 
 	imu.Read(); // read once to get a valid barometric reading
-	Wave.init(imu.Baro); // initialise the wave measurement calculations
 	
 	Bluetooth_Init(Configuration.BluetoothPort);
 
@@ -510,8 +500,6 @@ void setup()
 
 	Serial.println("F_CPU " + String(F_CPU / 1000000) + "MHz");
 	Serial.println("F_BUS " + String(F_BUS / 1000000) + "MHz");
-
-	// SatComm.Init();
 
 	Watchdog_Init(20); // seconds timeout -- pat dog in 5 second loop
 
@@ -535,7 +523,6 @@ void loop()
 	SchedulerTick(7, &WingSailPowerMonitorLoop, WingSailPowerMonitorLoopTime);
 	SchedulerTick(8, &FastMeasurementLoop, FastMeasurementLoopTime);
 	SchedulerTick(9, &LoggingLoop1m, Logging1mTime);
-	SchedulerTick(10, &LoggingLoop2hr, Logging2hrTime);
 
 	// update loop timing statistics
 	long micro = micros();

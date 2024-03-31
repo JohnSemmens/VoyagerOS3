@@ -15,7 +15,6 @@
 #include "Navigation.h"
 #include "AP_Math.h"
 #include "SailingNavigation.h"
-#include "TelemetryLogging.h"
 #include "HAL_SDCard.h"
 #include "DisplayStrings.h"
 

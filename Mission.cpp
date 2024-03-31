@@ -10,7 +10,6 @@
 #include "configValues.h"
 #include "Navigation.h"
 #include "CommandState_Processor.h"
-#include "TelemetryLogging.h"
 #include "HAL_SDCard.h"
 #include "HAL_GPS.h"
 #include "Loiter.h"

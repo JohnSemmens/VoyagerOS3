@@ -133,24 +133,27 @@ void NavigationUpdate_FastData(void)
 	// V1.6 1/11/2022 bug fix. corrected sequence of calculating and applying Magnetic Heading corrections.
 	//				also, apply Magnetic Variation after Deviation.
 
-	int IMUHeading = wrap_360_Int(imu.Heading);
-	NavData.HDG_CPC = CompassDeviationCalc(IMUHeading); //calculate simple cardinal point correction (deviation) for the heading, using values stored in config.
-	NavData.HDG_Mag = wrap_360_Int(IMUHeading - NavData.HDG_CPC + Configuration.MagnetVariation); // apply cardinal point correction (Deviation) and Variation
+
+	NavData.HDG_Raw = imu.Heading;
+	NavData.HDG_CPC = CompassDeviationCalc(NavData.HDG_Raw); //calculate simple cardinal point correction (deviation) for the heading, using values stored in config.
+	NavData.HDG_Mag = wrap_360_Int(NavData.HDG_Raw - NavData.HDG_CPC); // apply cardinal point correction (Deviation) 
+	NavData.HDG_True = wrap_360_Int(NavData.HDG_Mag + Configuration.MagnetVariation); //and Variation
 
 	// if we are moving fast enough, then calculate an error value from the GPS and dampen it using low pass filter
-	int COGHeadingErrorRaw=0;
-	if (NavData.SOG_Avg > 0.5) // if the SOG is reasonable then assume the COG. Now SOG_avg; was SOG, but it was giving spurious results.
-	{
-		COGHeadingErrorRaw = wrap_180(NavData.HDG_Mag - NavData.COG);
-	}
+	//int COGHeadingErrorRaw=0;
+	//if (NavData.SOG_Avg > 0.5) // if the SOG is reasonable then assume the COG. Now SOG_avg; was SOG, but it was giving spurious results.
+	//{
+	//	COGHeadingErrorRaw = wrap_180(NavData.HDG_Mag - NavData.COG);
+	//}
 
-	// apply a low pass filter
-	NavData.HDG_Err = HeadingErrorFilter.Filter(COGHeadingErrorRaw);
+	//// apply a low pass filter
+	//NavData.HDG_Err = HeadingErrorFilter.Filter(COGHeadingErrorRaw);
 
 	// Get Vessel Heading; either real or simulated.
 	if (!UseSimulatedVessel)
 	{
-		NavData.HDG = wrap_360_Int(NavData.HDG_Mag - NavData.HDG_Err);
+		NavData.HDG = NavData.HDG_True;
+		//NavData.HDG = wrap_360_Int(NavData.HDG_Mag - NavData.HDG_Err);
 	}
 	else
 	{

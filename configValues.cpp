@@ -224,7 +224,7 @@ void Load_Config_default_values(void)
 
 	Configuration.LoiterRadius = 15; // metres
 
-	Configuration.TWD_Offset = 30; // degrees. about 30 degrees
+	Configuration.TWD_Offset = 5; // degrees. about 30 degrees. Reduce to 5 in 31/3/2024.
 
 	Configuration.CTE_CorrectionGain = 20; // °  degrees. apply 20° correction to the CTS when CTE/CTEmax = 1
 
@@ -280,23 +280,33 @@ void Load_Config_default_values(void)
 	case 1:
 		// Voyager 2.5/Voyager 2.6/Voyager 2.7
 		strcpy(Configuration.VesselName, "Voyager 2.7");
-		Configuration.CompassOffsetAngle = 90; // degrees
+		Configuration.CompassOffsetAngle = 0; // degrees
 
 		// Compass USFS Max
 		// Cardinal corrections // valaidated as at 21/7/2023 - using 8 degree True melbourne grid
 		// Cardinal corrections // valaidated as at 26/8/2023 - using 8 degree True melbourne grid with board from voyager 3.0
 		// reminder: these values represent the observed Error
-		Configuration.CompassError000 = +11;
-		Configuration.CompassError090 = +19;
-		Configuration.CompassError180 = +15;
-		Configuration.CompassError270 = +0; 
+		Configuration.CompassError000 = +9;
+		Configuration.CompassError090 = -3;
+		Configuration.CompassError180 = -10;
+		Configuration.CompassError270 = -4; 
+		Configuration.RollEror = 0;
+
+		// Compass spherical scaling
+		Configuration.CompassMinX = -600;
+		Configuration.CompassMinY = -580;
+		Configuration.CompassMinZ = -340;
+		Configuration.CompassMaxX = +660;
+		Configuration.CompassMaxY = +870;
+		Configuration.CompassMaxZ = +580;
+
 
 		// Wingsail Magnetic Angle Sensor MPU9250  // updated Voyager 2.7  30/7/2023 compromise between looking east and west.
 		// Cardinal corrections
-		Configuration.WingAngleError000 = +6;
-		Configuration.WingAngleError090 = +20;
-		Configuration.WingAngleError180 = -8;
-		Configuration.WingAngleError270 = -5;
+		Configuration.WingAngleError000 = +0;
+		Configuration.WingAngleError090 = +25;
+		Configuration.WingAngleError180 = +0;
+		Configuration.WingAngleError270 = -8;
 		// Scale factors
 		Configuration.WingAngle_mXScale = 1100;
 		Configuration.WingAngle_mYScale = 4000;

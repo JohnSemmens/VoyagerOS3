@@ -13,7 +13,6 @@
 #endif
 
 #include "Navigation.h"
-#include "TelemetryLogging.h"
 #include "DisplayStrings.h"
 
 void SailingNavigation_Init(void);

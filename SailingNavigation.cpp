@@ -16,7 +16,6 @@
 #include "Loiter.h"
 #include "Mission.h"
 #include "location.h"
-#include "TelemetryLogging.h"
 #include "HAL_SDCard.h"
 
 extern NavigationDataType NavData;

@@ -8,7 +8,6 @@
 #include "Loiter.h"
 #include "location.h"
 #include "AP_Math.h"
-#include "TelemetryLogging.h"
 #include "HAL_SDCard.h"
 #include "Mission.h"
 #include "DisplayStrings.h"

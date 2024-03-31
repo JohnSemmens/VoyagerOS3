@@ -23,13 +23,12 @@
 
 #include "sim_vessel.h"
 #include "sim_weather.h"
-#include "WaveMeasurement.h"
 #include "TimeLib.h"
 #include "BluetoothConnection.h"
 #include "InternalTemperature.h"
-//#include "astronode.h"
-#include <Time.h>
-#include "HAL_SatCom.h"
+
+//#include <Time.h>
+
 
 extern NavigationDataType NavData;
 extern StateValuesStruct StateValues;
@@ -59,7 +58,7 @@ extern VesselUsageCountersStruct VesselUsageCounters;
 extern sim_vessel simulated_vessel;
 extern int SteeringServoOutput;
 extern sim_weather simulated_weather;
-extern WaveClass Wave;
+//extern WaveClass Wave;
 
 extern String LogFileName;
 extern uint32_t Minute;
@@ -68,7 +67,6 @@ extern int HWConfigNumber;
 extern byte BluetoothStatePin;
 extern BTStateType BTState;
 extern HALServo servo;
-extern HALSatComms SatComm;
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
@@ -146,7 +144,9 @@ void HALDisplay::Page(char page)
 	// y: Wing Sail Angle Sensor
 	// z: System Voltages
 
-	// B: Bluetooth   
+	// B: Bluetooth  
+	//  
+ 	// D: Compass Cal Details
 	// E: Environment
 	// F: WingAngle Fault Detection
 	// L: Low Power Nav
@@ -209,8 +209,8 @@ void HALDisplay::Page(char page)
 			display.print("R");
 			display.print((int)imu.Roll);
 				//	display.print(char(0x09));
-			display.print(F("  Stat:"));
-			display.println(imu.Algorithm_Status); // 8 is good
+			//display.print(F("  Stat:"));
+			//display.println(imu.Algorithm_Status); // 8 is good
 
 			display.setTextSize(1);
 			// line 4
@@ -220,8 +220,8 @@ void HALDisplay::Page(char page)
 			//display.print("hPa ");
 			//display.println();
 
-			display.print(dtostrf(imu.Baro , 7, 1, MsgString));
-			display.print("hPa ");
+			//display.print(dtostrf(imu.Baro , 7, 1, MsgString));
+			//display.print("hPa ");
 			display.display();
 			break;
 	
@@ -231,18 +231,19 @@ void HALDisplay::Page(char page)
 			display.clearDisplay();
 			display.setCursor(0, 0);
 			display.setTextSize(1);
-			display.print("Raw Mag Hdg:");
-			display.println(NavData.HDG_Mag);
+			display.print("IMU Hdg: ");
+			display.print(NavData.HDG_Raw);
 
-			display.print("CP Corectn:");
+			display.print(" CPC:");
 			display.print(NavData.HDG_CPC);
 			display.println();
 
-			display.print("Correct Hdg:");
-			display.println(NavData.HDG);
+			display.print("   HDG_Mag: ");
+			display.print(NavData.HDG_Mag);
+			display.println();
 
-		//	display.print("HW config:");
-		//	display.println(HWConfigNumber);
+			display.print("     Hdg_True:");
+			display.println(NavData.HDG_True);
 
 			display.print("CPC ");
 			display.print(Configuration.CompassError000);
@@ -985,37 +986,37 @@ void HALDisplay::Page(char page)
 			display.display();
 			break;
 
-		case 'u':
-			// 	Sat Comms **********************************
-			// u: Sail Navigation Parameters
-			display.clearDisplay();
-			display.setCursor(0, 0);
-			display.setTextSize(1);
+		//case 'u':
+		//	// 	Sat Comms **********************************
+		//	// u: Sail Navigation Parameters
+		//	display.clearDisplay();
+		//	display.setCursor(0, 0);
+		//	display.setTextSize(1);
 
-			// Row 1 -- astronode
-			display.print("RSSI:");
-			display.print(SatComm.RSSI);
-			display.print(" Msgs:");
-			display.print(SatComm.OutboundMsgCount);
-			display.print(" Next:");
-			display.print(SatComm.timeToNextSat);
-			display.println();
+		//	// Row 1 -- astronode
+		//	display.print("RSSI:");
+		//	display.print(SatComm.RSSI);
+		//	display.print(" Msgs:");
+		//	display.print(SatComm.OutboundMsgCount);
+		//	display.print(" Next:");
+		//	display.print(SatComm.timeToNextSat);
+		//	display.println();
 
-			// Row 2 -- 
-			char timestamp[20];
-			strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", localtime(&SatComm.timeValue));
-			display.print(timestamp);
-			display.println();
+		//	// Row 2 -- 
+		//	char timestamp[20];
+		//	strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", localtime(&SatComm.timeValue));
+		//	display.print(timestamp);
+		//	display.println();
 
-			// Row 3 --
-			display.print("Cmd: ");
-			display.print(SatComm.LastCommand);
-			display.println();
+		//	// Row 3 --
+		//	display.print("Cmd: ");
+		//	display.print(SatComm.LastCommand);
+		//	display.println();
 
-			// Row 4 --  
-			//display.print(SatComm.TestCounter);
-			display.display();
-			break;
+		//	// Row 4 --  
+		//	//display.print(SatComm.TestCounter);
+		//	display.display();
+		//	break;
 
 		case 'v':
 			// Version Display **********************************
@@ -1238,6 +1239,57 @@ void HALDisplay::Page(char page)
 				display.display();
 				break;	
 
+				// Compass Calibration Detail Display **********************************
+		case 'D':
+			display.clearDisplay();
+			display.setCursor(0, 0);
+			display.setTextSize(1);
+
+			// Row 1 -- CPU Temp
+			display.print("Comp Cal Enabled:");
+
+			imu.compass.CalibrateMode = true; // ** enable calibration when the page is displayed **
+
+			if (imu.compass.CalibrateMode)
+				display.print("y");
+			else
+				display.print("n");
+
+			display.println();
+
+			// Row 2 -- min
+			display.print("Min:");
+			display.print(imu.compass.cal_running_min.x);
+			display.print(",");
+			display.print(imu.compass.cal_running_min.y);
+			display.print(",");
+			display.print(imu.compass.cal_running_min.z);
+			display.println();
+
+			// Row 3 -- current
+			display.print("imu:");
+			display.print(imu.compass.magnetometer.x);
+			display.print(",");
+			display.print(imu.compass.magnetometer.y);
+			display.print(",");
+			display.print(imu.compass.magnetometer.z);
+			display.println();
+
+			// Row 4 -- max
+			display.print("Max:");
+			display.print(imu.compass.cal_running_max.x);
+			display.print(",");
+			display.print(imu.compass.cal_running_max.y);
+			display.print(",");
+			display.print(imu.compass.cal_running_max.z);
+			display.println();
+
+			display.display();
+			break;
+
+
+
+
 		// Environment ***********************
 		case 'E':
 			display.clearDisplay();
@@ -1257,10 +1309,10 @@ void HALDisplay::Page(char page)
 			display.println();
 
 			// Row 3 - Baro
-			display.print("Pres:  ");
-			display.print(dtostrf(imu.Baro, 6, 1, MsgString));
-			display.print("hPa");
-			display.println();
+		//	display.print("Pres:  ");
+		//	display.print(dtostrf(imu.Baro, 6, 1, MsgString));
+		//	display.print("hPa");
+		//	display.println();
 
 			display.display();
 			break;
@@ -1784,24 +1836,24 @@ void HALDisplay::Page(char page)
 
 			// Row 1 --  Wave Measurement
 			display.print("Peak:  ");
-			display.print(dtostrf(Wave.LowPressure, 7, 2, MsgString));
+			//display.print(dtostrf(Wave.LowPressure, 7, 2, MsgString));
 			display.println("hPa");
 
 			// Row 2 -- line 2
 			display.print("MSLP:  ");
-			display.print(dtostrf(Wave.SLPressure, 7, 2, MsgString));
+			//display.print(dtostrf(Wave.SLPressure, 7, 2, MsgString));
 			display.println("hPa");
 
 			// Row 3 -- line 3
 			display.print("Trough:");
-			display.print(dtostrf(Wave.HighPressure, 7, 2, MsgString));
+			//display.print(dtostrf(Wave.HighPressure, 7, 2, MsgString));
 			display.println("hPa");
 
 			// Row 4 -- line 4
 			display.print("Wave: ");
-			display.print(dtostrf(Wave.height, 5, 2, MsgString));
+			//display.print(dtostrf(Wave.height, 5, 2, MsgString));
 			display.print("m ");
-			display.print(dtostrf(Wave.period, 5, 1, MsgString));
+			//display.print(dtostrf(Wave.period, 5, 1, MsgString));
 			display.print("s");
 
 			display.display();

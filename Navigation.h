@@ -83,8 +83,6 @@ struct NavigationDataType {
 	 float SOG_knt;		 // Speed Over Ground -- Knots
 	 int COG;			 // Course Over Ground - Degrees - True
 	 
-	 int HDG;			// True Heading -Degrees -- Derived from compass with Variation applied.
-
 	 // Sailing Navigation Global Variables
 	 int CTS;		     // Course To Steer (CTS) - Angle -Degrees - this is the calculated course to steer
 						 // CTS will instantaneously change to a new bearing, when its time to tack
@@ -126,10 +124,13 @@ struct NavigationDataType {
 	 ManoeuvreType Manoeuvre; // this describes how the course changes should be performed. i.e. tack or gybe or don't specify.
 	 ManoeuvreStateType  ManoeuvreState; // this describes the current state of the Manoeuvre
 
-
-	 int HDG_Mag;			// Magnetic Heading, not corrected by the GPS COG
-	 int HDG_Err;			// Heading Error derived from GPS data
+	 int HDG_Raw;			// Raw Magnetic Heading from IMU
 	 int HDG_CPC;			// Heading Cardinal Point Correction
+	 int HDG_Mag;			// Magnetic Heading, not corrected by the GPS COG
+	 int HDG_True;			// True Heading, as Corrected Mag Heading with local variation applied.
+	 int HDG_Err;			// Heading Error derived from GPS data
+	 int HDG;				// True Heading -Degrees -- Derived from compass with Variation and corrections applied.
+
 	 int ROLL_Avg;			// dampened Roll value passed through a low pass filter
 
 	 float COG_Avg;			// dampened COG

@@ -15,7 +15,6 @@
 // V1.18 19/6/2022 added GPSPwr sentence as Event.
 // V1.19 22/7/2023 removed GPS power controls. 
 
-#include "WaveMeasurement.h"
 #include "HAL.h"
 #include "Sd.h"
 #include "HAL_GPS.h"
@@ -23,7 +22,6 @@
 #include "HAL_SDCard.h"
 
 #include "Navigation.h"
-#include "USFSmax.h"
 #include "Mission.h"
 #include "configValues.h"
 #include "CommandState_Processor.h"
@@ -34,10 +32,7 @@
 #include "DisplayStrings.h"
 #include "HAL_Time.h"
 #include "TimeLib.h"
-#include "HAL_SatCom.h"
 #include "InternalTemperature.h"
-#include "HAL_SatCom.h"
-#include <Time.h>
 
 extern File LogFile;
 
@@ -52,6 +47,7 @@ extern bool UseSimulatedVessel; 	// flag to disable the GPS and indicate that th
 extern configValuesType Configuration;
 extern HardwareSerial* Serials[];
 extern bool SD_Card_Present;
+extern uint32_t SSSS;
 extern uint32_t Minute;
 extern String LogFileName;
 
@@ -69,9 +65,8 @@ extern HALPowerMeasure PowerSensor;
 extern WingSailType WingSail;
 extern MissionValuesStruct MissionValues;
 extern char Version[];
-extern WaveClass Wave;
+//extern WaveClass Wave;
 extern HALServo servo;
-extern HALSatComms SatComm;
 
 void dateTime(uint16_t* date, uint16_t* time)
 {
@@ -105,7 +100,7 @@ void LogTimeHeader(void)
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(F("ss"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("Minute"));
+	LogFile.print(F("SSSS"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
 }
 
@@ -143,8 +138,6 @@ void SD_Logging_OpenFile() {
 	// set up 8.3 filename
 	int BL = String(VesselUsageCounters.BootCounter).length();
 	int ML = String(Minute).length();
-
-	//String BootString = ("00" + String(VesselUsageCounters.BootCounter)).substring( BL, BL + 2);
 
 	String BootString = ("000" + String(VesselUsageCounters.BootCounter)).substring(BL, BL + 3);
 	String MinuteString = ("00000" + String(Minute)).substring( ML,  ML + 5);
@@ -211,17 +204,6 @@ void SD_Logging_OpenFile() {
 	LogFile.print(F("HDG_Err"));
 	LogFile.println();
 
-	// Log_Situation sit - Time, BTW, DTW, CTE, CDA
-	LogFile.print(F("SIT"));
-	LogTimeHeader();
-	LogFile.print(F("BTW"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("DTW"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("CTE"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.println(F("CDA"));
-
 
 	// Log_Waypoints way - Time, previous waypoint Lat, Lon, next waypoint Lat, Lon
 	LogFile.print(F("WAY"));
@@ -276,6 +258,12 @@ void SD_Logging_OpenFile() {
 	LogFile.print(F("WingAngle"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(F("AWD"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("TWD"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("HDG_T"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("CDA"));
 	LogFile.println();
 
 	LogFile.print(F("SYS"));
@@ -438,19 +426,19 @@ void SD_Logging_OpenFile() {
 	LogFile.print(F("Description"));
 	LogFile.println();
 
-	// Wave Measurement Data 
-	LogFile.print(F("Wave"));
-	LogTimeHeader();
-	LogFile.print(F("MSLP hPa"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("Peak hPA"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("Trough hPA"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("Height m"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("Period s"));
-	LogFile.println();
+	//// Wave Measurement Data 
+	//LogFile.print(F("Wave"));
+	//LogTimeHeader();
+	//LogFile.print(F("MSLP hPa"));
+	//LogFile.print(Configuration.SDCardLogDelimiter);
+	//LogFile.print(F("Peak hPA"));
+	//LogFile.print(Configuration.SDCardLogDelimiter);
+	//LogFile.print(F("Trough hPA"));
+	//LogFile.print(Configuration.SDCardLogDelimiter);
+	//LogFile.print(F("Height m"));
+	//LogFile.print(Configuration.SDCardLogDelimiter);
+	//LogFile.print(F("Period s"));
+	//LogFile.println();
 
 	// Equipment Data 
 	LogFile.print(F("Equip"));
@@ -459,17 +447,6 @@ void SD_Logging_OpenFile() {
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.println();
 
-	// Sat Comms Data 
-	LogFile.print(F("Sat"));
-	LogTimeHeader();
-	LogFile.print(F("RTC"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("RSSI"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("TimeToNext"));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(F("Msgs"));
-	LogFile.println();
 
 	// log software version and other userful data at the start of each log file
 	// log the OS version to the SD Card
@@ -508,7 +485,7 @@ void LogTime(void)
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(second());
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(Minute);
+	LogFile.print(SSSS);
 	LogFile.print(Configuration.SDCardLogDelimiter);
 }
 
@@ -548,7 +525,7 @@ void SD_Logging_1s()
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print((int)imu.Roll);
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(imu.Algorithm_Status);
+	//LogFile.print(imu.Algorithm_Status);
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(NavData.ROLL_Avg);
 	LogFile.print(Configuration.SDCardLogDelimiter);
@@ -556,20 +533,6 @@ void SD_Logging_1s()
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(NavData.HDG_Err);
 	LogFile.println();
-
-
-	// Log_Situation sit - Time, BTW, DTW, CTE, CDA
-	LogFile.print(F("SIT"));
-	LogTime();
-	LogFile.print(NavData.BTW);
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(NavData.DTW);
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(NavData.CTE);
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(NavData.CDA);
-	LogFile.println();
-
 
 	// Log_Sailing  sai - Time, CTS, HDG, BTW, WA,   CTE , Max CTE ,TackTime,
 	LogFile.print(F("SAI"));
@@ -613,6 +576,12 @@ void SD_Logging_1s()
 	LogFile.print(WingSail.Angle);
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(NavData.AWD);
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(NavData.TWD);
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(NavData.HDG);
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(NavData.CDA);
 	LogFile.println();
 
 
@@ -625,8 +594,6 @@ void SD_Logging_1s()
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(gps.Location_Age);
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	//LogFile.print(gps.Valid_Duration);
-	//LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(UseSimulatedVessel);
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(gps.GPS_LocationIs_Valid(NavData.Currentloc));
@@ -668,7 +635,7 @@ void SD_Logging_1m()
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(strtrim(dtostrf(WingAngleSensor.WingSailAngleSensorPort.temperature, 5, 1, FloatString)));
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(dtostrf(imu.Baro, 7, 1, FloatString));
+	//LogFile.print(dtostrf(imu.Baro, 7, 1, FloatString));
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(dtostrf(InternalTemperature.readTemperatureC(), 5, 1, FloatString));
 	LogFile.println();
@@ -700,7 +667,7 @@ void SD_Logging_1m()
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(strtrim(dtostrf(WingAngleSensor.WingSailAngleSensorPort.temperature, 5, 1, FloatString)));
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(dtostrf(imu.Baro, 7, 1, FloatString));
+	//LogFile.print(dtostrf(imu.Baro, 7, 1, FloatString));
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(WingSail.Angle);
 	LogFile.print(Configuration.SDCardLogDelimiter);
@@ -708,40 +675,25 @@ void SD_Logging_1m()
 	LogFile.println();
 
 
-	// Wave Measurement Data 
-	LogFile.print(F("Wave"));
-	LogTime();
-	LogFile.print(dtostrf(Wave.SLPressure, 7, 2, FloatString));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(dtostrf(Wave.LowPressure, 7, 2, FloatString));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(dtostrf(Wave.HighPressure, 7, 2, FloatString));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(dtostrf(Wave.height, 5, 2, FloatString));
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(dtostrf(Wave.period, 5, 1, FloatString));
-	LogFile.println();
+	//// Wave Measurement Data 
+	//LogFile.print(F("Wave"));
+	//LogTime();
+	//LogFile.print(dtostrf(Wave.SLPressure, 7, 2, FloatString));
+	//LogFile.print(Configuration.SDCardLogDelimiter);
+	//LogFile.print(dtostrf(Wave.LowPressure, 7, 2, FloatString));
+	//LogFile.print(Configuration.SDCardLogDelimiter);
+	//LogFile.print(dtostrf(Wave.HighPressure, 7, 2, FloatString));
+	//LogFile.print(Configuration.SDCardLogDelimiter);
+	//LogFile.print(dtostrf(Wave.height, 5, 2, FloatString));
+	//LogFile.print(Configuration.SDCardLogDelimiter);
+	//LogFile.print(dtostrf(Wave.period, 5, 1, FloatString));
+	//LogFile.println();
 
 	// Equipment Data 
 	LogFile.print(F("Equip"));
 	LogTime();
 	LogFile.print(GetEquipmentStatusString(WingAngleSensor.PortStatus));
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.println();
-
-	// Sat Comms Data 
-	LogFile.print(F("Sat"));
-	LogTimeHeader();
-
-	char timestamp[20];
-	strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", localtime(&SatComm.timeValue));
-	LogFile.print(timestamp);
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(SatComm.RSSI);
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(SatComm.timeToNextSat);
-	LogFile.print(Configuration.SDCardLogDelimiter);
-	LogFile.print(SatComm.OutboundMsgCount);
 	LogFile.println();
 
 	SD_Logging_Waypoint();
@@ -861,8 +813,6 @@ void SD_Logging_Event_MissionStep(int mission_index)
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(dtostrf(float(MissionValues.MissionList[mission_index].waypoint.lng) / 10000000UL, 10, 5, FloatString));
 	LogFile.println();
-
-	// sendSatComMissionEvent(mission_index);
 }
 
 

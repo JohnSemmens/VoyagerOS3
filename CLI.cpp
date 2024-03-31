@@ -25,6 +25,7 @@
 #include "CommandState_Processor.h"
 #include "Mission.h"
 #include "CLI.h"
+#include "HAL_IMU.h"
 #include "configValues.h"
 #include "HAL_GPS.h"
 #include "LEDHeartBeat.h"
@@ -40,7 +41,6 @@
 #include "DisplayStrings.h"
 #include "LoRaManagement.h"
 #include "HAL_Time.h"
-#include "HAL_SatCom.h"
 
 extern NavigationDataType NavData;
 extern HALGPS gps;
@@ -67,7 +67,7 @@ extern int DecisionEventValue2;
 extern int LastParameterIndex;
 
 extern sim_vessel simulated_vessel;
-extern HALSatComms SatComm;
+extern HALIMU imu;
 
 // Command Line Interpreter - Global Variables
 char CLI_Msg[60];
@@ -580,6 +580,27 @@ void CLI_Processor(int CommandPort)
 	if (!strncmp(cmd, "eqg", 3))
 	{
 		QueueMessage(TelMessageType::EQG);
+	}
+
+	// ===============================================
+	// Command cal,  Compass calibration y/n
+	// ===============================================
+	//  1 parameter: y/n
+	// 
+	if (!strncmp(cmd, "cal", 3))
+	{
+		switch (*param1)
+		{
+		case 'y':
+			(*Serials[CommandPort]).print(F("Compass Calibrate-Yes"));
+			imu.compass.CalibrateMode = true;
+			break;
+
+		case 'n':
+			(*Serials[CommandPort]).print(F("Compass Calibrate-No"));
+			imu.compass.CalibrateMode = false;
+			break;
+		}
 	}
 
 	// ===============================================

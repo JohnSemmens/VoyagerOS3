@@ -10,21 +10,22 @@
 #endif
 
 #include "HAL.h"
+#include "MagneticSensorLsm303.h"
 
 class HALIMU
 {
 public:
-//	float Temperature;
-	float Baro;
+	float TemperatureC;
+	//float Baro;
 
 	int Pitch; // pitch positive bow up, negative bow down
 	int Roll;
 	int Heading;
-	int Algorithm_Status;
+	//int Algorithm_Status;
 
 	void Init();
 	void Read();
-
+	MagneticSensorLsm303 compass;
 	EquipmentStatusType EquipmentStatus;
 };
 

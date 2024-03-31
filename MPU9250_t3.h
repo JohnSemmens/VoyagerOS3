@@ -112,8 +112,8 @@
 #define ACCEL_YOUT_L       0x3E
 #define ACCEL_ZOUT_H       0x3F
 #define ACCEL_ZOUT_L       0x40
-#define TEMP_OUT_H         0x41
-#define TEMP_OUT_L         0x42
+#define TEMP_OUT_H_MPU9250         0x41 // disambiguated
+#define TEMP_OUT_L_MPU9250          0x42 // disambiguated
 #define GYRO_XOUT_H        0x43
 #define GYRO_XOUT_L        0x44
 #define GYRO_YOUT_H        0x45
