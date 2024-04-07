@@ -190,7 +190,7 @@ void Load_Config_default_values(void)
 
 	Configuration.timezone_offset = 10; // offset to our timezone from UTC/GPS time +10 hours for EST, and +11 for EDT (summer time).
 
-	Configuration.MagnetVariation = 12; // about 12 degrees East for Port Philip
+	Configuration.MagnetVariation = 12; // about 12 degrees East for Port Phillip
 
 	Configuration.MaxFileSize = 2048; //kb.  was 1024 kb 
 
@@ -282,14 +282,13 @@ void Load_Config_default_values(void)
 		strcpy(Configuration.VesselName, "Voyager 2.7");
 		Configuration.CompassOffsetAngle = 0; // degrees
 
-		// Compass USFS Max
-		// Cardinal corrections // valaidated as at 21/7/2023 - using 8 degree True melbourne grid
-		// Cardinal corrections // valaidated as at 26/8/2023 - using 8 degree True melbourne grid with board from voyager 3.0
+		// Compass LSM303
+		// Cardinal corrections calibrated using 8 degree True melbourne grid
 		// reminder: these values represent the observed Error
-		Configuration.CompassError000 = +9;
-		Configuration.CompassError090 = -3;
-		Configuration.CompassError180 = -10;
-		Configuration.CompassError270 = -4; 
+		Configuration.CompassError000 = +5;
+		Configuration.CompassError090 = -20;
+		Configuration.CompassError180 = -15;
+		Configuration.CompassError270 = +12; 
 		Configuration.RollEror = 0;
 
 		// Compass spherical scaling
@@ -303,9 +302,9 @@ void Load_Config_default_values(void)
 
 		// Wingsail Magnetic Angle Sensor MPU9250  // updated Voyager 2.7  30/7/2023 compromise between looking east and west.
 		// Cardinal corrections
-		Configuration.WingAngleError000 = +0;
+		Configuration.WingAngleError000 = +4;
 		Configuration.WingAngleError090 = +25;
-		Configuration.WingAngleError180 = +0;
+		Configuration.WingAngleError180 = -5;
 		Configuration.WingAngleError270 = -8;
 		// Scale factors
 		Configuration.WingAngle_mXScale = 1100;
@@ -323,8 +322,9 @@ void Load_Config_default_values(void)
 
 
 		//strcpy(Configuration.BT_MAC_Address, "113EE2A6E37A"); // lost at sea 31/3/2023
-		strcpy(Configuration.BT_MAC_Address, "11899aa11fa1");
+		//strcpy(Configuration.BT_MAC_Address, "11899aa11fa1"); // pcb was water damaged at sea 2/4/2024
 		//strcpy(Configuration.BT_MAC_Address, "113EE2A6E373"); // Voyager 3 sail
+		strcpy(Configuration.BT_MAC_Address, "11899aa11f7f"); // new pcb April 2024
 		break;
 
 	default:;
