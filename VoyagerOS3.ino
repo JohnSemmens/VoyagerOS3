@@ -89,10 +89,11 @@
 // V3.3.35 29/3/2024 Remove USFSMax. Add LSM303. Adjust TWD calc. 
 // V3.3.36 31/3/2024 Check-in. Ready for sea. Remove USFSMax. Add LSM303. Adjust TWD calc. Remove SatComms from vOS3. SD logging: add SSSS counter, consolidate logged values into NAV. 
 // V3.3.37 1/4/2024 config updates
-// V3.3.38 1/4/2024 config updates - new wing sail
+// V3.3.38 7/4/2024 config updates - new wing sail
+// V3.3.39 11/8/2024 corrections to buffer handling in CLI.cpp and BluetoothConnection.cpp
 
-char Version[] = "vOS3.3.38";
-char VersionDate[] = "7/4/2024";
+char Version[] = "vOS3.3.39";
+char VersionDate[] = "11/8/2024";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0
@@ -377,7 +378,6 @@ void WingSailPowerMonitorLoop(void*) // 10 minutes
 		CheckWingSailPower();
 	}
 }
-
 
 void FastMeasurementLoop(void*) // 200ms
 {

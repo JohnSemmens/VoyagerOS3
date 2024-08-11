@@ -73,8 +73,6 @@ extern HALIMU imu;
 char CLI_Msg[60];
 unsigned int CLI_i = 0;
 
-// temporary test code to investigate init strings for the NEO-8M GPS.
-//int GPSInitMessageNumber;
 
 // Collect the characters into a command string until end end of line,
 // and then process it.
@@ -86,17 +84,31 @@ void CLI_Process_Message(int CommandPort)
 	while ((*Serials[CommandPort]).available())
 	{
 		char received = (*Serials[CommandPort]).read();
-		CLI_Msg[CLI_i++] = received;
-		// Process message when new line character is received
-		if (received == '\n'  || CLI_i >= sizeof(CLI_Msg) - 2) // || received == '\r'
+		if (CLI_i < sizeof(CLI_Msg) - 1)
 		{
-			CLI_i = CLI_i - 2; // move pointer back before the trailing CrLf
+			CLI_Msg[CLI_i++] = received;
+		}
+
+		// Process message when new line character is received
+		if (received == '\n' || CLI_i >= sizeof(CLI_Msg) - 1) // || received == '\r'
+		{
+			// Adjust CLI_i to correctly remove trailing CRLF if they exist
+			if (CLI_i >= 2 && CLI_Msg[CLI_i - 2] == '\r')
+			{
+				CLI_i -= 2;
+			}
+			else if (CLI_i >= 1 && (CLI_Msg[CLI_i - 1] == '\n' || CLI_Msg[CLI_i - 1] == '\r'))
+			{
+				CLI_i -= 1;
+			}
 
 			CLI_Msg[CLI_i] = '\0';
-			CLI_i = 0;
 
 			if (strlen(CLI_Msg) >= 3) // check the command is long enough
+			{
 				CLI_Processor(CommandPort);
+			}
+			CLI_i = 0;
 		}
 	}
 }
@@ -116,8 +128,6 @@ void CLI_Processor(int CommandPort, String Command)
 
 void CLI_Processor(int CommandPort)
 {
-
-	//char Fullcmd[8] = "";
 	char cmd[4] = "";
 	char param1[12] = "";
 	char param2[12] = "";
@@ -128,8 +138,6 @@ void CLI_Processor(int CommandPort)
 	char param7[12] = "";
 
 	strcat(CLI_Msg, ",");
-
-	//Serial.println(CLI_Msg);
 
 	// Split into command and parameters separated by commas. 
 	strncpy(cmd, strtok(CLI_Msg, ","), sizeof(cmd) - 1);
@@ -297,8 +305,6 @@ void CLI_Processor(int CommandPort)
 
 		// update next WP for display purposes.
 		set_next_WP_for_display();
-
-		//QueueMessage(TelMessageType::MIS);  // don't send feedback. its blocking the next message.
 	}
 
 	// ===============================================
@@ -709,11 +715,11 @@ void CLI_Processor(int CommandPort)
 	// ===============================================
 	// Paramters: Line1, Line2
 	// 
-	if (!strncmp(cmd, "dsp", 3))
-	{
-		strcpy(MessageDisplayLine1, param1);
-		strcpy(MessageDisplayLine2, param2);
-	}
+	//if (!strncmp(cmd, "dsp", 3))
+	//{
+	//	strcpy(MessageDisplayLine1, param1);
+	//	strcpy(MessageDisplayLine2, param2);
+	//}
 
 	//// ===============================================
 	//// 	Command gps, set GPS Power Mode

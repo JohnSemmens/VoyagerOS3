@@ -212,20 +212,16 @@ void BT_CLI_Process_Message(int BluetoothPort)
 	// Accumulate characters in a command string up to a CR or LF or buffer fills. 
 	while ((*Serials[BluetoothPort]).available())
 	{
-		//
 		char received = (*Serials[BluetoothPort]).read();
-		BT_CLI_Msg[BT_CLI_i++] = received;
-		// debug
-		//Serial.print(received);
+		if (BT_CLI_i < sizeof(BT_CLI_Msg) - 1) // Ensure there is space for the received character and null terminator
+		{
+			BT_CLI_Msg[BT_CLI_i++] = received;
+		}
 
 		// Process message when new line character is received
-		if (received == '\n' || received == '\r' || 1 == sizeof(BT_CLI_Msg) - 1)
+		if (received == '\n' || received == '\r' || BT_CLI_i == sizeof(BT_CLI_Msg) - 1)
 		{
 			BT_CLI_Msg[BT_CLI_i] = '\0';
-
-			//String BTStatus = "BT:" + GetBTStatus(BTState);
-			//Serial.println(BTStatus);
-			//SD_Logging_Event_Messsage(BTStatus);
 
 			// only pass strings to CLI Processor if we are connected.
 			// the test is here, because we want pre-connection strings to be reflected
@@ -233,8 +229,7 @@ void BT_CLI_Process_Message(int BluetoothPort)
 			if (BTState == BTStateType::Connected)
 			{
 				BT_CLI_Processor(BluetoothPort);
-			}
-						
+			}					
 
 			BT_CLI_i = 0;
 		}
