@@ -192,6 +192,9 @@ void UpdatePrevNextWP(void)
 		NavData.prev_WP = NavData.Currentloc;
 	}
 
+	//reset states
+	NavData.PastBoundaryHold = false;
+
 	// get the command from the list and decide what to do.
 	MissionCommandType mc = MissionValues.MissionList[StateValues.mission_index].cmd;
 

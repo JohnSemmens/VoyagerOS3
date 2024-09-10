@@ -38,6 +38,7 @@
 #include "TelemetryMessages.h"
 #include "location.h"
 #include "sim_vessel.h"
+#include "sim_weather.h"
 #include "DisplayStrings.h"
 #include "LoRaManagement.h"
 #include "HAL_Time.h"
@@ -67,6 +68,7 @@ extern int DecisionEventValue2;
 extern int LastParameterIndex;
 
 extern sim_vessel simulated_vessel;
+extern sim_weather simulated_weather;
 extern HALIMU imu;
 
 // Command Line Interpreter - Global Variables
@@ -449,6 +451,19 @@ void CLI_Processor(int CommandPort)
 		simulated_vessel.Currentloc.lng = atof(param2) * 10000000UL;  //Longitude * 10**7
 		simulated_vessel.Heading = atoi(param3);
 	}
+
+
+	// ===============================================
+	// Command ssw: Set Simulated Wind
+	// i.e. use with simulated location. 
+	// ===============================================
+	// Set Current Location
+	// Parameter 1: simulated wind direction  
+	if (!strncmp(cmd, "ssw", 3))
+	{
+		simulated_weather.MajorWindDirection = atoi(param1);
+	}
+
 
 	// ===============================================
 	// Command HLS, Set Home Location

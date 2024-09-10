@@ -59,7 +59,7 @@ void SendMessage(int CommandPort, TelMessageType msg)
 		(*Serials[CommandPort]).print(",");
 		(*Serials[CommandPort]).print(NavData.BTW);
 		(*Serials[CommandPort]).print(",");
-		(*Serials[CommandPort]).print(NavData.CDA);
+		(*Serials[CommandPort]).print(NavData.IsBTWSailable ? 'Y' : 'N');
 
 		(*Serials[CommandPort]).print(",");
 		(*Serials[CommandPort]).print(dtostrf(float(NavData.Currentloc.lat) / 10000000UL, 10, 5, FloatString));

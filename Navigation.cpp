@@ -52,6 +52,8 @@ void NavigationUpdate_SlowData(void)
 	// V1.4 12/11/2017 updated to change BRL to RLB.
 	// V1.5 21/10/2018 updated to change test for past waypoint to require it to be within range.
 
+	static int Prev_CTE;
+
 	if (NavData.next_WP_valid && gps.GPS_LocationIs_Valid(NavData.Currentloc)) {
 		NavData.RLB = get_bearing(NavData.prev_WP, NavData.next_WP);
 		NavData.BTW = get_bearing(NavData.Currentloc, NavData.next_WP);
@@ -98,7 +100,7 @@ void NavigationUpdate_SlowData(void)
 		NavData.DTH = 0;
 		NavData.BTH = 0;
 		NavData.DTB = 0;
-	//	NavData.LowPowerMode = false;
+		NavData.PastBoundaryHold = false;
 	}
 
 	NavData.PointOfSail = GetPointOfSail(NavData.AWA);
@@ -109,6 +111,19 @@ void NavigationUpdate_SlowData(void)
 	// calculate the bearing lines of the both tacks for Running
 	NavData.PortLaylineRunning = wrap_360_Int(NavData.TWD + 180 + Configuration.MinimumAngleDownWind);
 	NavData.StarboardLaylineRunning = wrap_360_Int(NavData.TWD + 180 - Configuration.MinimumAngleDownWind);
+	
+	// detect if past boundary and set state.
+	if (abs(NavData.CTE) > NavData.MaxCTE)
+	{
+		NavData.PastBoundaryHold = true;
+	}
+
+	// detect a sign change for CTE and clear the PastBoundaryHold flag.
+	if (((long)Prev_CTE * (long)NavData.CTE) <= 0)
+	{
+		NavData.PastBoundaryHold = false;
+	}
+	Prev_CTE = NavData.CTE;
 }
 
 void NavigationUpdate_MediumData(void)

@@ -91,9 +91,14 @@
 // V3.3.37 1/4/2024 config updates
 // V3.3.38 7/4/2024 config updates - new wing sail
 // V3.3.39 11/8/2024 corrections to buffer handling in CLI.cpp and BluetoothConnection.cpp
+// V3.4.40 7/9/2024  add VMG & VMC to SD Card logging
+//					 update Telemetry message LNA. drop CDA, add IsBTWSailable
+//					 Added PastBoundaryHold to manage MaxCTE sailing error
+//					 Added MajorWindDirection to Simulated Weather
+// V3.4.41 10/9/2024 Update to sim_vessel to match Version 4 with True Wind error component.
 
-char Version[] = "vOS3.3.39";
-char VersionDate[] = "11/8/2024";
+char Version[] = "V3.4.41";
+char VersionDate[] = "10/9/2024";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0

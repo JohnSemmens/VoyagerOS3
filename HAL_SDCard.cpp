@@ -447,6 +447,13 @@ void SD_Logging_OpenFile() {
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.println();
 
+	// Performance Data 
+	LogFile.print(F("Perf"));
+	LogTimeHeader();
+	LogFile.print(F("VMG"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("VMC"));
+	LogFile.println();
 
 	// log software version and other userful data at the start of each log file
 	// log the OS version to the SD Card
@@ -607,6 +614,14 @@ void SD_Logging_1s()
 	LogFile.print(WingSail.TrimTabAngle);
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(servo.PoweredOn);
+	LogFile.println();
+
+	// Performance Data 
+	LogFile.print(F("Perf"));
+	LogTimeHeader();
+	LogFile.print(NavData.VMG);
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(NavData.VMC);
 	LogFile.println();
 
 	LogFile.flush();

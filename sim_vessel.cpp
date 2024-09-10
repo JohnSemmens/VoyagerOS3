@@ -29,6 +29,14 @@ void sim_vessel::update()
 	{
 		windAngle = wrap_180(simulated_weather.WindDirection - Heading);// -ve is port tack, +ve starboard tack
 
+		int SimTrueWindError = 40;
+
+		// add an error component which is related to the tack
+		if (windAngle > 0)
+			windAngle = windAngle - SimTrueWindError; // eg. 160
+		else
+			windAngle = windAngle + SimTrueWindError; // eg. 190
+
 		// calculate the simulated distance moved based on the VPP and elapsed time since last update
 		SOG_mps = vpp( windAngle, simulated_weather.WindSpeed);
 		float UpdateDistance = SOG_mps * update_time_ms / 1000;
@@ -63,9 +71,6 @@ void sim_vessel::update()
 				Heading = wrap_360_Int(Heading + (-20 + windAngle)); // decrease heading
 			}
 		}
-
-
-
 	}
 }
 
