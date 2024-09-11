@@ -27,9 +27,6 @@
 #include "BluetoothConnection.h"
 #include "InternalTemperature.h"
 
-//#include <Time.h>
-
-
 extern NavigationDataType NavData;
 extern StateValuesStruct StateValues;
 extern HALIMU imu;
@@ -58,7 +55,6 @@ extern VesselUsageCountersStruct VesselUsageCounters;
 extern sim_vessel simulated_vessel;
 extern int SteeringServoOutput;
 extern sim_weather simulated_weather;
-//extern WaveClass Wave;
 
 extern String LogFileName;
 extern uint32_t Minute;
@@ -1617,6 +1613,8 @@ void HALDisplay::Page(char page)
 			display.print(NavData.HDG);
 			display.print(F(" BTW:"));
 			display.print(NavData.BTW);
+			display.print(F(" PB Hold:"));
+			display.print(NavData.PastBoundaryHold ? "Y" : "N");
 			display.println();
 
 			// Row 2 TWD

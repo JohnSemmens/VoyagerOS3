@@ -264,6 +264,8 @@ void SD_Logging_OpenFile() {
 	LogFile.print(F("HDG_T"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(F("CDA"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("MaxCTEHold"));
 	LogFile.println();
 
 	LogFile.print(F("SYS"));
@@ -426,20 +428,6 @@ void SD_Logging_OpenFile() {
 	LogFile.print(F("Description"));
 	LogFile.println();
 
-	//// Wave Measurement Data 
-	//LogFile.print(F("Wave"));
-	//LogTimeHeader();
-	//LogFile.print(F("MSLP hPa"));
-	//LogFile.print(Configuration.SDCardLogDelimiter);
-	//LogFile.print(F("Peak hPA"));
-	//LogFile.print(Configuration.SDCardLogDelimiter);
-	//LogFile.print(F("Trough hPA"));
-	//LogFile.print(Configuration.SDCardLogDelimiter);
-	//LogFile.print(F("Height m"));
-	//LogFile.print(Configuration.SDCardLogDelimiter);
-	//LogFile.print(F("Period s"));
-	//LogFile.println();
-
 	// Equipment Data 
 	LogFile.print(F("Equip"));
 	LogTimeHeader();
@@ -479,7 +467,6 @@ void LogTime(void)
 {
 	// V1.0 1/10/2016 John Semmens
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	//LogFile.print(F("20"));
 	LogFile.print(year());
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(month());
@@ -575,10 +562,7 @@ void SD_Logging_1s()
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(NavData.RLB);
 	LogFile.print(Configuration.SDCardLogDelimiter);
-	if (NavData.IsBTWSailable)
-		LogFile.print("Y");
-	else
-		LogFile.print("N");
+	LogFile.print(NavData.IsBTWSailable ? "Y" : "N");
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(WingSail.Angle);
 	LogFile.print(Configuration.SDCardLogDelimiter);
@@ -589,6 +573,8 @@ void SD_Logging_1s()
 	LogFile.print(NavData.HDG);
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(NavData.CDA);
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(NavData.PastBoundaryHold ? "Y" : "N");
 	LogFile.println();
 
 
@@ -628,10 +614,6 @@ void SD_Logging_1s()
 
 	// Check if the current log file has reached or exceeded the configured file size limit
 	Check_LogFileSize();
-
-	// if GPS Time validity changes to valid then close and open the SD Card Logfile.
-	// This is helpful because the timestamps on the previous file will be wrong.
-	//Check_GPS_TimeStatus();
 }
 
 
@@ -688,21 +670,6 @@ void SD_Logging_1m()
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(WingAngleSensor.Movement);
 	LogFile.println();
-
-
-	//// Wave Measurement Data 
-	//LogFile.print(F("Wave"));
-	//LogTime();
-	//LogFile.print(dtostrf(Wave.SLPressure, 7, 2, FloatString));
-	//LogFile.print(Configuration.SDCardLogDelimiter);
-	//LogFile.print(dtostrf(Wave.LowPressure, 7, 2, FloatString));
-	//LogFile.print(Configuration.SDCardLogDelimiter);
-	//LogFile.print(dtostrf(Wave.HighPressure, 7, 2, FloatString));
-	//LogFile.print(Configuration.SDCardLogDelimiter);
-	//LogFile.print(dtostrf(Wave.height, 5, 2, FloatString));
-	//LogFile.print(Configuration.SDCardLogDelimiter);
-	//LogFile.print(dtostrf(Wave.period, 5, 1, FloatString));
-	//LogFile.println();
 
 	// Equipment Data 
 	LogFile.print(F("Equip"));

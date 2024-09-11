@@ -96,9 +96,10 @@
 //					 Added PastBoundaryHold to manage MaxCTE sailing error
 //					 Added MajorWindDirection to Simulated Weather
 // V3.4.41 10/9/2024 Update to sim_vessel to match Version 4 with True Wind error component.
+// V3.4.42 11/9/2024 added PastBoundaryHold to SD Card logging and OLED Display.
 
-char Version[] = "V3.4.41";
-char VersionDate[] = "10/9/2024";
+char Version[] = "V3.4.42"; 
+char VersionDate[] = "11/9/2024";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0

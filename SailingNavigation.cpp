@@ -147,7 +147,7 @@ int CalculateSailingCTS(void)
 	int SteeringCourse = -111; // dummy value
 
 	// if BTW is sailable then return NavData.BTW with CTE correction, provided we are not on a Past Boundary Hold.
-	if (NavData.IsBTWSailable && !(NavData.PastBoundaryHold))
+	if (NavData.IsBTWSailable && !(NavData.PastBoundaryHold)) 
 	{
 		SteeringCourse = wrap_360_Int(NavData.BTW - NavData.CTE_Correction); // subtract the offset (CTE Correction) to steer back to rhumb line to reduce CTE
 		NavData.CourseType = SteeringCourseType::ctDirectToWayPoint;
