@@ -7,7 +7,7 @@
 #include "SchedulerCooperative.h"
 
 // nominate a maximum number of tasks to be supported.
-static const long MaxNumberOfTasks = 11;
+static const long MaxNumberOfTasks = 11; // max index +1
 
 
 // array holding the times in ms for the next running of each task.
