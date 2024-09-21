@@ -97,11 +97,11 @@
 //					 Added MajorWindDirection to Simulated Weather
 // V3.4.41 10/9/2024 Update to sim_vessel to match Version 4 with True Wind error component.
 // V3.4.42 11/9/2024 added PastBoundaryHold to SD Card logging and OLED Display.
-// V3.4.43 19/9/2024 Separate the IMU loop from the steering loop.
+// V3.4.43 19/9/2024 Separate the IMU loop from the steering loop. 
+// V3.4.44 21/9/2024 Added steering deadband, as a config item and parameter. Revert steering loops back to one loop.
 
-
-char Version[] = "V3.4.43"; 
-char VersionDate[] = "19/9/2024a";
+char Version[] = "V3.4.44"; 
+char VersionDate[] = "21/9/2024";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0
@@ -167,7 +167,6 @@ HALWingAngle WingAngleSensor;		// HAL WingSail Angle Sensor object
 HALPowerMeasure PowerSensor;		// HAL for the voltage and Current measurement
 HALTelemetry Telemetry; 
 HALDisplay Display;
-//WaveClass Wave;
 
 bool UseSimulatedVessel = false;	// flag to disable the GPS and indicate that the current location is simulated 
 									// but keep reading the GPS to get current time.
@@ -201,14 +200,14 @@ File LogFile;
 bool SD_Card_Present; // Flag for SD Card Presence
 
 // Loop Timer Contants used by the scheduler
-static const unsigned long IMULoopTime = 25;
-static const unsigned long SteeringLoopTime = 200;  //ms  25 ms
+//static const unsigned long IMULoopTime = 25;
+//static const unsigned long SteeringLoopTime = 25;  //ms  25 ms
 
 static const int FastMeasurementLoopTime = 200;  //ms  
 
 static const int SlowLoopTime = 5000;  //ms 5 seconds
 static const int MediumLoopTime = 1000; //ms 1 second
-//static const int FastLoopTime = 25;  //ms  50 ms
+static const int FastLoopTime = 25;  //ms  50 ms
 
 static const int Logging1mTime = 60000; //ms 1 minute
 static const int LoggingLoopTime = 1000; //ms 1 second
@@ -293,14 +292,10 @@ void MediumLoop(void*)  // 1 second
 	WingAngleSensor.UpdateMovementDetection(WingAngleSensor.Angle);
 }
 
-void IMULoop(void*) // 25 ms
+void FastLoop(void*) // 25 ms
 {
 	LED_HeartBeat(13);
 	imu.Read();
-}
-
-void SteeringLoop(void*) // maybe 200 ms
-{
 	NavigationUpdate_FastData(); // calculate the true heading
 	UpdateTargetHeading();	// Target Heading is based on CTS with a Low pass filter
 	SteeringFastUpdate();	// update steering servo postion based on nav data
@@ -530,7 +525,7 @@ void loop()
 	//give the scheduler a chance to act
 	SchedulerTick(0, &SlowLoop, SlowLoopTime);
 	SchedulerTick(1, &MediumLoop, MediumLoopTime);
-	SchedulerTick(2, &SteeringLoop, SteeringLoopTime);
+	SchedulerTick(2, &FastLoop, FastLoopTime);
 	SchedulerTick(3, &LoggingLoop, LoggingLoopTime);
 	SchedulerTick(4, &SlowLoggingLoop, SlowLoggingLoopTime);
 	SchedulerTick(5, &TelemetryLoop, TelemetryLoopTime);
@@ -538,7 +533,7 @@ void loop()
 	SchedulerTick(7, &WingSailPowerMonitorLoop, WingSailPowerMonitorLoopTime);
 	SchedulerTick(8, &FastMeasurementLoop, FastMeasurementLoopTime);
 	SchedulerTick(9, &LoggingLoop1m, Logging1mTime);
-	SchedulerTick(10, &IMULoop, IMULoopTime);
+	//SchedulerTick(10, &IMULoop, IMULoopTime);
 
 	// update loop timing statistics
 	long micro = micros();

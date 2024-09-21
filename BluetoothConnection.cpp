@@ -201,7 +201,7 @@ String GetBTStatus(BTStateType BTState)
 
 // Command Line Interpreter - Global Variables
 char BT_CLI_Msg[50];
-int BT_CLI_i = 0;
+unsigned int BT_CLI_i = 0;
 
 // Collect the characters into a command string until end end of line,
 // and then process it.

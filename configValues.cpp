@@ -219,6 +219,7 @@ void Load_Config_default_values(void)
 	Configuration.pidDirection = REVERSE; // Direction: DIRECT 0 or REVERSE 1
 	Configuration.pidCentre = 1500; // 
 	Configuration.SteeringFilterConstant = 0.15;
+	Configuration.SteeringDeadBand = 5;
 
 	Configuration.UseMotor = false; // set default to true during early trials
 

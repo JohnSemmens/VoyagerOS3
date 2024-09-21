@@ -913,7 +913,7 @@ void CLI_Processor(int CommandPort)
 			break;
 
 		case 31:
-		//	Configuration.Servo_Channel_Sail = atoi(param2);
+			Configuration.SteeringDeadBand = atoi(param2);
 			break;
 
 		case 32:
@@ -1299,8 +1299,8 @@ void ListParameter(int CommandPort,int ParameterIndex)
 		break;
 
 	case 31:
-	//	(*Serials[CommandPort]).print(F("Servo_Channel_Sail,"));
-	//	(*Serials[CommandPort]).print(Configuration.Servo_Channel_Sail);
+		(*Serials[CommandPort]).print(F("SteeringDeadBand,"));
+		(*Serials[CommandPort]).print(Configuration.SteeringDeadBand);
 		break;
 
 	case 32:

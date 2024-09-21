@@ -12,6 +12,7 @@
 
 void SteeringFastUpdate(void);
 void SteeringPID_Init(void);
+void ComputeSteeringOutput(void);
 
 #endif
 
