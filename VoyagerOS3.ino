@@ -1,4 +1,4 @@
-// Voyager Operating System
+00// Voyager Operating System
 // Operating System for Sailing vessels.
 
 // VoyagerOS2 
@@ -99,9 +99,10 @@
 // V3.4.42 11/9/2024 added PastBoundaryHold to SD Card logging and OLED Display.
 // V3.4.43 19/9/2024 Separate the IMU loop from the steering loop. 
 // V3.4.44 21/9/2024 Added steering deadband, as a config item and parameter. Revert steering loops back to one loop.
+// V3.4.45 21/9/2024 temporarily added logging of usage every 1 minute, vs normal logging every 10 minutes
 
-char Version[] = "V3.4.44"; 
-char VersionDate[] = "21/9/2024";
+char Version[] = "V3.4.45"; 
+char VersionDate[] = "17/10/2024";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0
@@ -338,6 +339,7 @@ void LoggingLoop1m(void*) // 1 minute loop
 {
 	// call the 1 minute SD card logging procedure
 	SD_Logging_1m();
+	SD_Logging_Event_Usage(); // temporary logging of usage every minute  **************************************
 
 	simulated_weather.update();
 

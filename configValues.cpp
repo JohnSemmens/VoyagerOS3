@@ -188,7 +188,7 @@ void Load_Config_default_values(void)
 
 	Configuration.SailableAngleMargin = 25; // was 45°, changed to 35° 15/4/2020 , changed to 25° 5/1/2020
 
-	Configuration.timezone_offset = 10; // offset to our timezone from UTC/GPS time +10 hours for EST, and +11 for EDT (summer time).
+	Configuration.timezone_offset = 11; // offset to our timezone from UTC/GPS time +10 hours for EST, and +11 for EDT (summer time).
 
 	Configuration.MagnetVariation = 12; // about 12 degrees East for Port Phillip
 
@@ -229,14 +229,6 @@ void Load_Config_default_values(void)
 
 	Configuration.CTE_CorrectionGain = 20; // °  degrees. apply 20° correction to the CTS when CTE/CTEmax = 1
 
-	//Configuration.GPS_PowerMode = GPS_PowerModeType::Normal;
-	//Configuration.DTB_Threshold = 200; // metres - Distance to Boundary threshold. move to low power nav mode when DTB exceeds threshold
-	//Configuration.GPS_Max_Sleep_Time = 60;  // seconds - sleep time for GPS while in low power nav mode.
-	//Configuration.GPS_Min_Wake_Time = 12;	// seconds - wake time for GPS while in low power nav mode. This must be longer than Settle time.
-	//Configuration.GPS_Setttle_Time = 10;  // seconds. Time to wait after GPS location becomes valid before using location data.
-	//									 // this is required the because the Ebyte GPS is intially a few metres (maybe 10m) off to one side when it wakes.
-	//									 // it then takes a few seconds to settle into the correct location.
-	
 	Configuration.MinimumTackTime = 60; //  seconds hold time between tacks for favoured tack.
 
 	// set default config according to HW Config setting for the following config items.
@@ -280,7 +272,7 @@ void Load_Config_default_values(void)
 
 	case 1:
 		// Voyager 2.5/Voyager 2.6/Voyager 2.7
-		strcpy(Configuration.VesselName, "Voyager 2.7");
+		strcpy(Configuration.VesselName, "Voyager 2.8");
 		Configuration.CompassOffsetAngle = 0; // degrees
 
 		// Compass LSM303
