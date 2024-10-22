@@ -18,9 +18,7 @@
 #include "HAL.h"
 #include "Sd.h"
 #include "HAL_GPS.h"
-
 #include "HAL_SDCard.h"
-
 #include "Navigation.h"
 #include "Mission.h"
 #include "configValues.h"
@@ -604,7 +602,7 @@ void SD_Logging_1s()
 
 	// Performance Data 
 	LogFile.print(F("Perf"));
-	LogTimeHeader();
+	LogTime();
 	LogFile.print(NavData.VMG);
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(NavData.VMC);
