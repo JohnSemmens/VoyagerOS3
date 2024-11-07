@@ -302,7 +302,6 @@ String GetMissionCommandString(MissionCommandType cmd)
 
 String GetEquipmentStatusString(EquipmentStatusType status)
 {
-
 	String ResultString;
 
 	switch (status) {
@@ -332,6 +331,39 @@ String GetEquipmentStatusString(EquipmentStatusType status)
 
 	return ResultString;
 }
+
+String GetInIronsStatusString(InIronsStateType state)
+{
+	String ResultString;
+
+	switch (state) {
+	case InIronsStateType::iistNo:
+		ResultString = "No";
+		break;
+
+	case InIronsStateType::iistPortTack:
+		ResultString = "PortTack";
+		break;
+
+	case InIronsStateType::iistStarboardTack:
+		ResultString = "StarboardTack";
+		break;
+
+	case InIronsStateType::iistPortReach:
+		ResultString = "PortReach";
+		break;
+
+	case InIronsStateType::iistStarboardReach:
+		ResultString = "StarboardReach";
+		break;
+
+	default:
+		ResultString = "StatusUnknown";
+	}
+
+	return ResultString;
+}
+
 
 //https://stackoverflow.com/questions/25345598/c-implementation-to-trim-char-array-of-leading-trailing-white-space-not-workin
 

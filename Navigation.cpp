@@ -39,7 +39,7 @@ LowPassFilter HeadingErrorFilter;
 LowPassFilter SOGFilter;
 LowPassAngleFilter COGFilter;
 
-void NavigationUpdate_SlowData(void)
+void NavigationUpdate_SlowData(void) // 5 seconds
 {
 	// calculate the DTW, BTW and CTE for the current Previous and Next Waypoints,
 	// using the current location.
@@ -101,6 +101,7 @@ void NavigationUpdate_SlowData(void)
 		NavData.BTH = 0;
 		NavData.DTB = 0;
 		NavData.PastBoundaryHold = false;
+		NavData.InIronsState = iistNo;
 	}
 
 	NavData.PointOfSail = GetPointOfSail(NavData.AWA);
@@ -111,7 +112,9 @@ void NavigationUpdate_SlowData(void)
 	// calculate the bearing lines of the both tacks for Running
 	NavData.PortLaylineRunning = wrap_360_Int(NavData.TWD + 180 + Configuration.MinimumAngleDownWind);
 	NavData.StarboardLaylineRunning = wrap_360_Int(NavData.TWD + 180 - Configuration.MinimumAngleDownWind);
-	
+
+	NavData.InIronsState = GetInIronsState(NavData);
+
 	// detect if past boundary and set state.
 	if (abs(NavData.CTE) > NavData.MaxCTE)
 	{

@@ -51,7 +51,7 @@ enum DecisionEventReasonType {
 
 	String GetMissionCommandString(MissionCommandType cmd);
 	String GetEquipmentStatusString(EquipmentStatusType status);
-
+	String GetInIronsStatusString(InIronsStateType state);
 
 	char* strtrim(char* str);
 	void strtrim2(char* str);

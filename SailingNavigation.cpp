@@ -146,6 +146,14 @@ int CalculateSailingCTS(void)
 	// review how to get to Waypoint, and whether a tack is needed or not
 	int SteeringCourse = -111; // dummy value
 
+	
+	if (NavData.InIronsState == InIronsStateType::iistStarboardTack || NavData.InIronsState == InIronsStateType::iistPortTack)
+	{
+		// in irons
+		SteeringCourse = GetInIronsRecoveryCourse(NavData);
+	}
+
+
 	// if BTW is sailable then return NavData.BTW with CTE correction, provided we are not on a Past Boundary Hold.
 	if (NavData.IsBTWSailable && !(NavData.PastBoundaryHold)) 
 	{
@@ -533,4 +541,69 @@ bool IsBTWSailable(NavigationDataType NavData)
 			&& (abs_WindAngleToWaypoint <= (180 - (Configuration.MinimumAngleDownWind))); // + SailableAngleMargin)));
 
 	return IsCourseSailable;
+}
+
+InIronsStateType GetInIronsState(NavigationDataType NavData)
+{
+	InIronsStateType state = InIronsStateType::iistNo;
+
+	int absAWA = abs(NavData.AWA);
+	int absCTSDifference = abs(wrap_180(NavData.CTS - NavData.TargetHDG));
+
+	// Check if the conditions for "In Irons" are met
+	if (absCTSDifference <= 2 												// intended course is stable
+		&& (servo.ServoPulseWidth > 1800 || servo.ServoPulseWidth < 1200) 	// rudder hard over
+		&& absAWA < Configuration.MinimumAngleUpWind)						// pointing high
+	{
+		// Determine the in irons state based on CourseType and AWA
+		if (NavData.CourseType == SteeringCourseType::ctPortTack && NavData.AWA >= 0)
+		{
+			state = InIronsStateType::iistStarboardTack;
+		}
+
+		if (NavData.CourseType == SteeringCourseType::ctStarboardTack && NavData.AWA <= 0)
+		{
+			state = InIronsStateType::iistPortTack;
+		}
+	}
+
+	return state;
+}
+
+int GetInIronsRecoveryCourse(NavigationDataType NavData)
+{
+	int SteeringCourse;
+
+	switch (NavData.InIronsState)
+	{
+	case InIronsStateType::iistPortTack:
+		SteeringCourse = SteerBeamReach(SteeringCourseType::ctPortTack);
+		break;
+
+	case InIronsStateType::iistStarboardTack:
+		SteeringCourse = SteerBeamReach(SteeringCourseType::ctStarboardTack);
+		break;
+
+	default:;
+	}
+	return SteeringCourse;
+}
+
+int SteerBeamReach(SteeringCourseType tack)
+{
+	int SteeringCourse;
+
+	switch (tack)
+	{
+	case SteeringCourseType::ctPortTack:
+		SteeringCourse = wrap_360_Int(NavData.HDG + (NavData.AWA - 90));
+		break;
+
+	case SteeringCourseType::ctStarboardTack:
+		SteeringCourse = wrap_360_Int(NavData.HDG + (NavData.AWA + 90));
+		break;
+
+	default:;
+	}
+	return SteeringCourse;
 }

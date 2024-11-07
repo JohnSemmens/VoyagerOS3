@@ -169,6 +169,10 @@ void SD_Logging_OpenFile() {
 	LogFile.print(F("Field9"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(F("Field10"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("Field11"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("Field12"));
 	LogFile.println();
 
 
@@ -239,6 +243,8 @@ void SD_Logging_OpenFile() {
 	LogFile.print(F("TargetHDG"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(F("CourseType"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("InIrons"));
 	LogFile.println();
 
 
@@ -548,6 +554,8 @@ void SD_Logging_1s()
 	LogFile.print(NavData.TargetHDG);
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(CourseTypeToString(NavData.CourseType));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(GetInIronsStatusString(NavData.InIronsState));
 	LogFile.println();
 
 

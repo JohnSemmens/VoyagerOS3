@@ -32,6 +32,7 @@ int SteerDeepRunning(SteeringCourseType Tack);
 bool IsBTWSailable(NavigationDataType NavData);
 
 PointOfSailType GetPointOfSail(int WindAngle);
+InIronsStateType GetInIronsState(NavigationDataType NavData);
 
 #endif
 

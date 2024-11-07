@@ -61,6 +61,14 @@ enum ManoeuvreStateType {	// used in a state machine to manage a turn manoeuvre
 	mstComplete		// manoeuvre Completed 
 };
 
+enum InIronsStateType { // used record and handle being in-irons
+	iistNo,				// all good, not in-irons
+	iistPortTack,		// in-irons on port tack
+	iistStarboardTack,	// in-irons on starboard tack
+	iistPortReach,		// recovering from being in-irons on port tack
+	iistStarboardReach	// recovering from being in-irons on starboard tack
+};
+
 struct NavigationDataType {
 	 Location Currentloc;	// Current GPS Location
 	 long CurrentLocTimeStamp; // time in millis when the current location was measured.
@@ -149,6 +157,8 @@ struct NavigationDataType {
 
 	 bool PastBoundaryHold; // true when past boundary, and not cleared until CTE changes sign. 
 	 // Used to inhibit changing to favoured course after crossing boundary
+
+	 InIronsStateType InIronsState; // enumerated type describing whether in-irons, and what state of in-irons.
 };
 
 void NavigationUpdate_SlowData(void);
