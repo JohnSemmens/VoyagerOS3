@@ -34,7 +34,7 @@ bool IsBTWSailable(NavigationDataType NavData);
 
 PointOfSailType GetPointOfSail(int WindAngle);
 InIronsStateType GetInIronsState(NavigationDataType NavData);
-
+int GetInIronsRecoveryCourse(NavigationDataType NavData);
 
 #endif
 

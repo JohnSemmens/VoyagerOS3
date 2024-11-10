@@ -50,6 +50,10 @@ extern HALPowerMeasure PowerSensor;
 extern HALWingAngle WingAngleSensor;
 extern WingSailType WingSail;
 
+extern DecisionEventType DecisionEvent;				// used in event based logging and diagnosis
+extern DecisionEventReasonType DecisionEventReason;	// used in event based logging and diagnosis
+extern int DecisionEventValue;							// this a value relevant to an event
+extern int DecisionEventValue2;							// this a value relevant to an event
 extern VesselUsageCountersStruct VesselUsageCounters;
 
 extern sim_vessel simulated_vessel;
@@ -1251,7 +1255,8 @@ void HALDisplay::Page(char page)
 			display.println();
 
 			// Row 3 -- current
-
+			display.print(F("Servo: "));
+			display.print(servo.ServoPulseWidth);
 			display.println();
 
 			// Row 4 -- CTS

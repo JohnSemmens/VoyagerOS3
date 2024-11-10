@@ -360,13 +360,13 @@ String GetInIronsStatusString(InIronsStateType state)
 		ResultString = "StarboardTack";
 		break;
 
-	case InIronsStateType::iistPortReach:
-		ResultString = "PortReach";
-		break;
+	//case InIronsStateType::iistPortReach:
+	//	ResultString = "PortReach";
+	//	break;
 
-	case InIronsStateType::iistStarboardReach:
-		ResultString = "StarboardReach";
-		break;
+	//case InIronsStateType::iistStarboardReach:
+	//	ResultString = "StarboardReach";
+	//	break;
 
 	default:
 		ResultString = "StatusUnknown";

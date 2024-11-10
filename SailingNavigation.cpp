@@ -17,6 +17,7 @@
 #include "Mission.h"
 #include "location.h"
 #include "HAL_SDCard.h"
+#include "HAL_Servo.h"
 
 extern NavigationDataType NavData;
 extern StateValuesStruct StateValues;
@@ -24,8 +25,10 @@ extern configValuesType Configuration;
 extern MissionValuesStruct MissionValues;
 extern DecisionEventType DecisionEvent;				// used in event based logging and diagnosis
 extern DecisionEventReasonType DecisionEventReason;	// used in event based logging and diagnosis
+extern HALServo servo;
 
 LowPassAngleFilter TargetHeadingFilter;
+
 
 void SailingNavigation_Init(void)
 {
@@ -150,6 +153,12 @@ int CalculateSailingCTS(void)
 	// If we're in irons then act with priority over other decisions.
 	if (NavData.InIronsState == InIronsStateType::iistStarboardTack || NavData.InIronsState == InIronsStateType::iistPortTack)
 	{
+		if (NavData.CourseType == SteeringCourseType::ctPortTack && NavData.InIronsState == InIronsStateType::iistStarboardTack)
+			NavData.CourseType = SteeringCourseType::ctStarboardTack;
+
+		if (NavData.CourseType == SteeringCourseType::ctStarboardTack && NavData.InIronsState == InIronsStateType::iistPortTack)
+			NavData.CourseType = SteeringCourseType::ctPortTack;
+		
 		// in irons
 		SteeringCourse = GetInIronsRecoveryCourse(NavData);
 	}
@@ -550,16 +559,16 @@ InIronsStateType GetInIronsState(NavigationDataType NavData)
 
 	// Check if the conditions for "In Irons" are met
 	if (absCTSDifference <= 2 												// intended course is stable
-		&& (servo.ServoPulseWidth > 1800 || servo.ServoPulseWidth < 1200) 	// rudder hard over
+		//&& (servo.ServoPulseWidth > 1800 || servo.ServoPulseWidth < 1200) 	// rudder hard over
 		&& absAWA < Configuration.MinimumAngleUpWind)						// pointing high
 	{
 		// Determine the in irons state based on CourseType and AWA
-		if (NavData.CourseType == SteeringCourseType::ctPortTack && NavData.AWA >= 0) 
+		if (NavData.CourseType == SteeringCourseType::ctPortTack && NavData.AWA >= 0 && servo.ServoPulseWidth > 1200)
 		{
 			state = InIronsStateType::iistStarboardTack; // lying on starboard tack, but steering for port tack
 		}
 
-		if (NavData.CourseType == SteeringCourseType::ctStarboardTack && NavData.AWA <= 0) 
+		if (NavData.CourseType == SteeringCourseType::ctStarboardTack && NavData.AWA <= 0 && servo.ServoPulseWidth > 1800)
 		{
 			state = InIronsStateType::iistPortTack; // lying on port tack, but steering for starboard tack
 		}
@@ -569,7 +578,7 @@ InIronsStateType GetInIronsState(NavigationDataType NavData)
 
 int GetInIronsRecoveryCourse(NavigationDataType NavData)
 {
-	int SteeringCourse;
+	int SteeringCourse = NavData.BTW;
 
 	switch (NavData.InIronsState)
 	{
@@ -595,7 +604,7 @@ int GetInIronsRecoveryCourse(NavigationDataType NavData)
 int SteerBeamReach(SteeringCourseType tack)
 {
 	// reminder: Postive AWA is starboard tack
-	int SteeringCourse;
+	int SteeringCourse = NavData.BTW;
 
 	switch (tack)
 	{
