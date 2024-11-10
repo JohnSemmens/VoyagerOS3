@@ -24,7 +24,9 @@ enum DecisionEventType {
 	deTackToPortRunning,
 	deTackToStarboardRunning,
 	deChangeCommandState,
-	deHoldCourse
+	deHoldCourse,
+	deRecoverInIronsToPort,
+	deRecoverInIronsToStbd
 };
 
 enum DecisionEventReasonType {
@@ -39,7 +41,8 @@ enum DecisionEventReasonType {
 	rUnkown,
 	rNone,
 	rManualIntervention,
-	rApproachingWP
+	rApproachingWP,
+	rInIrons
 };
 
 

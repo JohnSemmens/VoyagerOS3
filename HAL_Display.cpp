@@ -141,7 +141,7 @@ void HALDisplay::Page(char page)
 	// z: System Voltages
 
 	// B: Bluetooth  
-	//  
+	// C: Decisions
  	// D: Compass Cal Details
 	// E: Environment
 	// F: WingAngle Fault Detection
@@ -1234,6 +1234,37 @@ void HALDisplay::Page(char page)
 
 				display.display();
 				break;	
+
+
+				// Decision Text Display **********************************
+		case 'C':
+			display.clearDisplay();
+			display.setCursor(0, 0);
+			display.setTextSize(1);
+
+			// Row 1 -- Decision Event
+			display.print(DecisionEventToString(DecisionEvent));
+			display.println();
+
+			// Row 2 -- Decision reason
+			display.print(DecisionEventReasonToString(DecisionEventReason));
+			display.println();
+
+			// Row 3 -- current
+
+			display.println();
+
+			// Row 4 -- CTS
+			display.print(F("AWA:"));
+			display.print(NavData.AWA);
+
+			display.print(F(" CTS:"));
+			display.print(NavData.CTS);
+			display.println();
+
+			display.display();
+			break;
+
 
 				// Compass Calibration Detail Display **********************************
 		case 'D':

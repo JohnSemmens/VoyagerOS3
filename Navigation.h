@@ -63,10 +63,10 @@ enum ManoeuvreStateType {	// used in a state machine to manage a turn manoeuvre
 
 enum InIronsStateType { // used record and handle being in-irons
 	iistNo,				// all good, not in-irons
-	iistPortTack,		// in-irons on port tack
-	iistStarboardTack,	// in-irons on starboard tack
-	iistPortReach,		// recovering from being in-irons on port tack
-	iistStarboardReach	// recovering from being in-irons on starboard tack
+	iistPortTack,		// in-irons lying on port tack
+	iistStarboardTack,	// in-irons lying on starboard tack
+	//iistPortReach,		// recovering from being in-irons on port tack
+	//iistStarboardReach	// recovering from being in-irons on starboard tack
 };
 
 struct NavigationDataType {

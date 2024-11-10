@@ -101,9 +101,10 @@
 // V3.4.44 21/9/2024 Added steering deadband, as a config item and parameter. Revert steering loops back to one loop.
 // V3.4.45 21/9/2024 Correction of SD Card logging of Performance message.
 // V3.4.46 27/10/2024 add in-irons detection and recovery
+// V3.4.47 9/11/2024 updates following code review for in-irons detection and recovery
 
-char Version[] = "V3.4.46"; 
-char VersionDate[] = "07/11/2024";
+char Version[] = "V3.4.47"; 
+char VersionDate[] = "09/11/2024";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0

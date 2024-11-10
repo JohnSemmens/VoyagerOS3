@@ -147,117 +147,116 @@ int CalculateSailingCTS(void)
 	int SteeringCourse = -111; // dummy value
 
 	
+	// If we're in irons then act with priority over other decisions.
 	if (NavData.InIronsState == InIronsStateType::iistStarboardTack || NavData.InIronsState == InIronsStateType::iistPortTack)
 	{
 		// in irons
 		SteeringCourse = GetInIronsRecoveryCourse(NavData);
 	}
-
-
-	// if BTW is sailable then return NavData.BTW with CTE correction, provided we are not on a Past Boundary Hold.
-	if (NavData.IsBTWSailable && !(NavData.PastBoundaryHold)) 
-	{
-		SteeringCourse = wrap_360_Int(NavData.BTW - NavData.CTE_Correction); // subtract the offset (CTE Correction) to steer back to rhumb line to reduce CTE
-		NavData.CourseType = SteeringCourseType::ctDirectToWayPoint;
-	}
 	else
 	{
-	  // not directly sailable to the Waypoint, hence need to tack up or tack down to waypoint.
-
-	 //  if we were previously sailing direct to WP and now can't, then choose favoured tack
-		// OR  if we have just incremented a mission step (in the last 8 seconds) then we need to re-assess and choose favoured tack
-		//		we would get here within about 5 seconds, if it wasn't sailable, hence allow a bit more, i.e. 8 seconds.
-		if ( (NavData.CourseType == SteeringCourseType::ctDirectToWayPoint ) ||
-				((millis() - MissionValues.MissionCommandStartTime) < 8000) )
+		// if BTW is sailable then return NavData.BTW with CTE correction, provided we are not on a Past Boundary Hold.
+		if (NavData.IsBTWSailable && !(NavData.PastBoundaryHold))
 		{
-			// given we were previously sailing direct to WP and now can't, then set the Tack to the Favoured tack
-			// (Note: NavData.CourseType is set within the SetTack function)
-			SteeringCourse = SetTack(NavData.FavouredTack, DecisionEventReasonType::rFavouredTack);
-			NavData.TackDuration = 0;
+			SteeringCourse = wrap_360_Int(NavData.BTW - NavData.CTE_Correction); // subtract the offset (CTE Correction) to steer back to rhumb line to reduce CTE
+			NavData.CourseType = SteeringCourseType::ctDirectToWayPoint;
 		}
-
-		//XXX asym gybe
-		switch(NavData.CourseType)
+		else
 		{
-		case SteeringCourseType::ctPortTack:
-			// we are here because the BTW is not directly sailable.
-			// hold the current tack until we reach the boundary
-			// if we reach the starboard boundary then change to Starboard tack
-			if (NavData.CTE > NavData.MaxCTE)
-			{
-				// swap to starboard tack Beating
-				NavData.Manoeuvre = ManoeuvreType::mtGybe;
-				//NavData.ManoeuvreState = ManoeuvreStateType::mstCommence;
-				NavData.ManoeuvreState = ManoeuvreStateType::mstCommenceToStbd;
-				SteeringCourse = SetTack(SteeringCourseType::ctStarboardTack, DecisionEventReasonType::rPastBoundary);
-				NavData.TackDuration = 0;
-			} 
-			else
-			{
-				// hold port tack Beating
-				SteeringCourse = SetTack(SteeringCourseType::ctPortTack, DecisionEventReasonType::rNoChange);
-			}
-			break;
+			// not directly sailable to the Waypoint, hence need to tack up or tack down to waypoint.
 
-		case SteeringCourseType::ctStarboardTack:
-			// if we reach the Port boundary then change to port tack.
-			if (-NavData.CTE > NavData.MaxCTE)
+		   //  if we were previously sailing direct to WP and now can't, then choose favoured tack
+			  // OR  if we have just incremented a mission step (in the last 8 seconds) then we need to re-assess and choose favoured tack
+			  //		we would get here within about 5 seconds, if it wasn't sailable, hence allow a bit more, i.e. 8 seconds.
+			if ((NavData.CourseType == SteeringCourseType::ctDirectToWayPoint) ||
+				((millis() - MissionValues.MissionCommandStartTime) < 8000))
 			{
-				// change to port tack Beating
-				NavData.Manoeuvre = ManoeuvreType::mtGybe;
-				//NavData.ManoeuvreState = ManoeuvreStateType::mstCommence;
-				NavData.ManoeuvreState = ManoeuvreStateType::mstCommenceToPort;
-				SteeringCourse = SetTack(SteeringCourseType::ctPortTack, DecisionEventReasonType::rPastBoundary);
+				// given we were previously sailing direct to WP and now can't, then set the Tack to the Favoured tack
+				// (Note: NavData.CourseType is set within the SetTack function)
+				SteeringCourse = SetTack(NavData.FavouredTack, DecisionEventReasonType::rFavouredTack);
 				NavData.TackDuration = 0;
 			}
-			else
+
+			//XXX asym gybe
+			switch (NavData.CourseType)
 			{
-				// hold starboard tack Beating
-			 SteeringCourse = SetTack(SteeringCourseType::ctStarboardTack, DecisionEventReasonType::rNoChange);
+			case SteeringCourseType::ctPortTack:
+				// we are here because the BTW is not directly sailable.
+				// hold the current tack until we reach the boundary
+				// if we reach the starboard boundary then change to Starboard tack
+				if (NavData.CTE > NavData.MaxCTE)
+				{
+					// swap to starboard tack Beating
+					NavData.Manoeuvre = ManoeuvreType::mtGybe;
+					NavData.ManoeuvreState = ManoeuvreStateType::mstCommenceToStbd;
+					SteeringCourse = SetTack(SteeringCourseType::ctStarboardTack, DecisionEventReasonType::rPastBoundary);
+					NavData.TackDuration = 0;
+				}
+				else
+				{
+					// hold port tack Beating
+					SteeringCourse = SetTack(SteeringCourseType::ctPortTack, DecisionEventReasonType::rNoChange);
+				}
+				break;
+
+			case SteeringCourseType::ctStarboardTack:
+				// if we reach the Port boundary then change to port tack.
+				if (-NavData.CTE > NavData.MaxCTE)
+				{
+					// change to port tack Beating
+					NavData.Manoeuvre = ManoeuvreType::mtGybe;
+					NavData.ManoeuvreState = ManoeuvreStateType::mstCommenceToPort;
+					SteeringCourse = SetTack(SteeringCourseType::ctPortTack, DecisionEventReasonType::rPastBoundary);
+					NavData.TackDuration = 0;
+				}
+				else
+				{
+					// hold starboard tack Beating
+					SteeringCourse = SetTack(SteeringCourseType::ctStarboardTack, DecisionEventReasonType::rNoChange);
+				}
+				break;
+
+
+			case SteeringCourseType::ctPortTackRunning:
+				// we are here because the BTW is not directly sailable.
+				// hold the current tack until we reach the boundary
+				// if we reach the PORT boundary then change to Starboard RUNNING tack
+				if (-NavData.CTE > NavData.MaxCTE)
+				{
+					// swap to starboard tack Running. No need to specify a Gybe, it will happen anyway.
+					SteeringCourse = SetTack(SteeringCourseType::ctStarboardTackRunning, DecisionEventReasonType::rPastBoundary);
+					NavData.TackDuration = 0;
+				}
+				else
+				{
+					// hold port tack Running
+					SteeringCourse = SetTack(SteeringCourseType::ctPortTackRunning, DecisionEventReasonType::rNoChange);
+				}
+				break;
+
+			case SteeringCourseType::ctStarboardTackRunning:
+				// if we reach the Starboard boundary then change to port RUNNING tack.
+				if (NavData.CTE > NavData.MaxCTE)
+				{
+					// change to port tack Running.  No need to specify a Gybe, it will happen anyway.
+					SteeringCourse = SetTack(SteeringCourseType::ctPortTackRunning, DecisionEventReasonType::rPastBoundary);
+					NavData.TackDuration = 0;
+				}
+				else
+				{
+					// hold starboard tack Running
+					SteeringCourse = SetTack(SteeringCourseType::ctStarboardTackRunning, DecisionEventReasonType::rNoChange);
+				}
+				break;
+
+			case SteeringCourseType::ctDirectToWayPoint:
+				// we shouldn't get here.
+				break;
+
+			default:;
 			}
-			break;
-
-
-		case SteeringCourseType::ctPortTackRunning:
-			// we are here because the BTW is not directly sailable.
-			// hold the current tack until we reach the boundary
-			// if we reach the PORT boundary then change to Starboard RUNNING tack
-			if (-NavData.CTE > NavData.MaxCTE)
-			{
-				// swap to starboard tack Running. No need to specify a Gybe, it will happen anyway.
-				SteeringCourse = SetTack(SteeringCourseType::ctStarboardTackRunning, DecisionEventReasonType::rPastBoundary);
-				NavData.TackDuration = 0;
-			}
-			else
-			{
-				// hold port tack Running
-				SteeringCourse = SetTack(SteeringCourseType::ctPortTackRunning, DecisionEventReasonType::rNoChange);
-			}
-			break;
-
-		case SteeringCourseType::ctStarboardTackRunning:
-			// if we reach the Starboard boundary then change to port RUNNING tack.
-			if (NavData.CTE > NavData.MaxCTE)
-			{
-				// change to port tack Running.  No need to specify a Gybe, it will happen anyway.
-				SteeringCourse = SetTack(SteeringCourseType::ctPortTackRunning, DecisionEventReasonType::rPastBoundary);
-				NavData.TackDuration = 0;
-			}
-			else
-			{
-				// hold starboard tack Running
-				SteeringCourse = SetTack(SteeringCourseType::ctStarboardTackRunning, DecisionEventReasonType::rNoChange);
-			}
-			break;
-
-		case SteeringCourseType::ctDirectToWayPoint:
-			// we shouldn't get here.
-			break;
-
-		default:;
-		}
-	} // not IsBTWSailable
-
+		} // not IsBTWSailable
+	}
 	return SteeringCourse;
 }
 
@@ -406,7 +405,6 @@ int LimitToSailingCourse(int Course)
 		}
 
 		DecisionEventReason = DecisionEventReasonType::rLimitToSailingCourse;
-	///	TelemetryLogging_Event_Decisions(CommandPort, Configuration.TelemetryLoggingMask);
 		SD_Logging_Event_Decisions();
 	}
 	return SailingCourse;
@@ -443,7 +441,7 @@ int SteerCloseHauled(SteeringCourseType Tack)
 
 int SteerDeepRunning(SteeringCourseType Tack)
 {
-	// return a Deep Running steering course for the given tack (Port or Starboard, both Running and beating)
+	// return a Deep Running steering course for the given tack (Port or Starboard)
 	// V1.0 2/1/2021 John Semmens.
 
 	int SteeringCourse = NavData.BTW; // default, not needed;
@@ -556,17 +554,16 @@ InIronsStateType GetInIronsState(NavigationDataType NavData)
 		&& absAWA < Configuration.MinimumAngleUpWind)						// pointing high
 	{
 		// Determine the in irons state based on CourseType and AWA
-		if (NavData.CourseType == SteeringCourseType::ctPortTack && NavData.AWA >= 0)
+		if (NavData.CourseType == SteeringCourseType::ctPortTack && NavData.AWA >= 0) 
 		{
-			state = InIronsStateType::iistStarboardTack;
+			state = InIronsStateType::iistStarboardTack; // lying on starboard tack, but steering for port tack
 		}
 
-		if (NavData.CourseType == SteeringCourseType::ctStarboardTack && NavData.AWA <= 0)
+		if (NavData.CourseType == SteeringCourseType::ctStarboardTack && NavData.AWA <= 0) 
 		{
-			state = InIronsStateType::iistPortTack;
+			state = InIronsStateType::iistPortTack; // lying on port tack, but steering for starboard tack
 		}
 	}
-
 	return state;
 }
 
@@ -576,31 +573,40 @@ int GetInIronsRecoveryCourse(NavigationDataType NavData)
 
 	switch (NavData.InIronsState)
 	{
-	case InIronsStateType::iistPortTack:
-		SteeringCourse = SteerBeamReach(SteeringCourseType::ctPortTack);
+	case InIronsStateType::iistPortTack: // lying on port tack
+		DecisionEvent = DecisionEventType::deRecoverInIronsToPort;
+		SteeringCourse = SteerBeamReach(SteeringCourseType::ctPortTack); // recover on port tack
 		break;
 
-	case InIronsStateType::iistStarboardTack:
-		SteeringCourse = SteerBeamReach(SteeringCourseType::ctStarboardTack);
+	case InIronsStateType::iistStarboardTack: // lying on starboard tack
+		DecisionEvent = DecisionEventType::deRecoverInIronsToStbd;
+		SteeringCourse = SteerBeamReach(SteeringCourseType::ctStarboardTack); // recover on starboard tack
 		break;
 
 	default:;
 	}
+
+	DecisionEventReason = DecisionEventReasonType::rInIrons;
+	SD_Logging_Event_Decisions();
+
 	return SteeringCourse;
 }
 
 int SteerBeamReach(SteeringCourseType tack)
 {
+	// reminder: Postive AWA is starboard tack
 	int SteeringCourse;
 
 	switch (tack)
 	{
 	case SteeringCourseType::ctPortTack:
-		SteeringCourse = wrap_360_Int(NavData.HDG + (NavData.AWA - 90));
+	case SteeringCourseType::ctPortTackRunning:
+		SteeringCourse = wrap_360_Int(NavData.HDG + (NavData.AWA + 90));
 		break;
 
 	case SteeringCourseType::ctStarboardTack:
-		SteeringCourse = wrap_360_Int(NavData.HDG + (NavData.AWA + 90));
+	case SteeringCourseType::ctStarboardTackRunning:
+		SteeringCourse = wrap_360_Int(NavData.HDG + (NavData.AWA - 90));
 		break;
 
 	default:;

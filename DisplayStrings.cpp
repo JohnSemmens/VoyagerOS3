@@ -104,6 +104,14 @@ String DecisionEventToString(DecisionEventType DecisionEvent)
 		DecisionEventAsString = F("HoldCourse");
 		break;
 
+	case	DecisionEventType::deRecoverInIronsToPort:
+		DecisionEventAsString = F("RecoverToPort");
+		break;
+
+	case	DecisionEventType::deRecoverInIronsToStbd:
+		DecisionEventAsString = F("RecoverToStbd");
+		break;
+
 	default:
 		DecisionEventAsString = F("Invalid");
 	}
@@ -167,6 +175,10 @@ String DecisionEventReasonToString(DecisionEventReasonType DecisionEventReason)
 		DecisionEventReasonAsString = F("ApproachingWP");
 		break;
 
+	case DecisionEventReasonType::rInIrons:
+		DecisionEventReasonAsString = F("InIrons");
+		break;
+
 	default:
 		DecisionEventReasonAsString = F("Invalid");
 	}
@@ -194,7 +206,6 @@ String CourseTypeToString(SteeringCourseType CourseType)
 	case SteeringCourseType::ctStarboardTack:
 		CourseTypeAsString = F("StarboardTack");
 		break;
-
 
 	case SteeringCourseType::ctPortTackRunning:
 		CourseTypeAsString = F("PortTackRun");

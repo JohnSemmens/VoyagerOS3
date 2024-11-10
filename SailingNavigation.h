@@ -28,11 +28,13 @@ int SetTack(SteeringCourseType Tack, DecisionEventReasonType Reason);
 int LimitToSailingCourse(int Course);
 int SteerCloseHauled(SteeringCourseType Tack);
 int SteerDeepRunning(SteeringCourseType Tack);
+int SteerBeamReach(SteeringCourseType tack);
 
 bool IsBTWSailable(NavigationDataType NavData);
 
 PointOfSailType GetPointOfSail(int WindAngle);
 InIronsStateType GetInIronsState(NavigationDataType NavData);
+
 
 #endif
 
