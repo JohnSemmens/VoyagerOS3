@@ -103,9 +103,10 @@
 // V3.4.46 27/10/2024 add in-irons detection and recovery
 // V3.4.47 9/11/2024 updates following code review for in-irons detection and recovery
 // V3.4.48 10/11/2024 updates following hardware integration testing for in-irons detection and recovery
+// V3.4.49 17/11/2024 In Irons handling ready for on-water testing.
 
-char Version[] = "V3.4.48"; 
-char VersionDate[] = "10/11/2024";
+char Version[] = "V3.4.49"; 
+char VersionDate[] = "17/11/2024";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0
@@ -160,9 +161,6 @@ char VersionDate[] = "10/11/2024";
 #include "HAL_Time.h"
 #include "BluetoothConnection.h"
 #include "HAL_Watchdog.h"
-
-
-
 
 HALGPS gps;							// HAL GPS object
 HALServo servo;						// HAL Servo object

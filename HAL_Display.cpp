@@ -1248,23 +1248,33 @@ void HALDisplay::Page(char page)
 
 			// Row 1 -- Decision Event
 			display.print(DecisionEventToString(DecisionEvent));
-			display.println();
-
-			// Row 2 -- Decision reason
+			display.print(" ");
 			display.print(DecisionEventReasonToString(DecisionEventReason));
 			display.println();
 
+			// Row 2 -- Decision reason
+
+			display.print(GetInIronsStatusString(NavData.InIronsState));
+			display.println();
+
 			// Row 3 -- current
-			display.print(F("Servo: "));
-			display.print(servo.ServoPulseWidth);
+			//display.print(F("Servo: "));
+			//display.print(servo.ServoPulseWidth);
+
+			//
+
+			display.print(CourseTypeToString(NavData.CourseType));
 			display.println();
 
 			// Row 4 -- CTS
-			display.print(F("AWA:"));
+			display.print(F("AWA"));
 			display.print(NavData.AWA);
 
-			display.print(F(" CTS:"));
+			display.print(F(" CTS"));
 			display.print(NavData.CTS);
+
+			display.print(F(" SV"));
+			display.print(servo.ServoPulseWidth);
 			display.println();
 
 			display.display();

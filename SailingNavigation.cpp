@@ -563,7 +563,7 @@ InIronsStateType GetInIronsState(NavigationDataType NavData)
 		&& absAWA < Configuration.MinimumAngleUpWind)						// pointing high
 	{
 		// Determine the in irons state based on CourseType and AWA
-		if (NavData.CourseType == SteeringCourseType::ctPortTack && NavData.AWA >= 0 && servo.ServoPulseWidth > 1200)
+		if (NavData.CourseType == SteeringCourseType::ctPortTack && NavData.AWA >= 0 && servo.ServoPulseWidth < 1200)
 		{
 			state = InIronsStateType::iistStarboardTack; // lying on starboard tack, but steering for port tack
 		}
@@ -595,7 +595,7 @@ int GetInIronsRecoveryCourse(NavigationDataType NavData)
 	default:;
 	}
 
-	DecisionEventReason = DecisionEventReasonType::rInIrons;
+	DecisionEventReason = DecisionEventReasonType::rInIronsRecover;
 	SD_Logging_Event_Decisions();
 
 	return SteeringCourse;

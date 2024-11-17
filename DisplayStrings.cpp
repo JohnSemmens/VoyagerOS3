@@ -73,11 +73,11 @@ String DecisionEventToString(DecisionEventType DecisionEvent)
 		break;
 
 	case DecisionEventType::deIncrementMissionIndex:
-		DecisionEventAsString = F("IncrementMissionIndex");
+		DecisionEventAsString = F("IncMssnIdx");
 		break;
 
 	case DecisionEventType::dePastWaypoint:
-		DecisionEventAsString = F("PastWaypoint");
+		DecisionEventAsString = F("PastWP");
 		break;
 
 	case DecisionEventType::deTackToPort:
@@ -85,19 +85,19 @@ String DecisionEventToString(DecisionEventType DecisionEvent)
 		break;
 
 	case DecisionEventType::deTackToStarboard:
-		DecisionEventAsString = F("toStarboardTack");
+		DecisionEventAsString = F("toStbdTack");
 		break;
 
 	case DecisionEventType::deTackToPortRunning:
-		DecisionEventAsString = F("toPortTackRunning");
+		DecisionEventAsString = F("toPortTkRunning");
 		break;
 
 	case DecisionEventType::deTackToStarboardRunning:
-		DecisionEventAsString = F("toStarboardTackRunning");
+		DecisionEventAsString = F("toStbdTkRunning");
 		break;
 
 	case DecisionEventType::deChangeCommandState:
-		DecisionEventAsString = F("ChangeCommandState");
+		DecisionEventAsString = F("ChangeCmdState");
 		break;
 
 	case DecisionEventType::deHoldCourse:
@@ -128,7 +128,7 @@ String DecisionEventReasonToString(DecisionEventReasonType DecisionEventReason)
 	switch (DecisionEventReason)
 	{
 	case DecisionEventReasonType::rFavouredTack:
-		DecisionEventReasonAsString = F("FavouredTack");
+		DecisionEventReasonAsString = F("FavTack");
 		break;
 
 	case DecisionEventReasonType::rNoChange:
@@ -136,11 +136,11 @@ String DecisionEventReasonToString(DecisionEventReasonType DecisionEventReason)
 		break;
 
 	case DecisionEventReasonType::rPastBoundary:
-		DecisionEventReasonAsString = F("PastBoundary");
+		DecisionEventReasonAsString = F("PastBndry");
 		break;
 
 	case DecisionEventReasonType::rPastDuration:
-		DecisionEventReasonAsString = F("PastDuration");
+		DecisionEventReasonAsString = F("PastDurn");
 		break;
 
 	case DecisionEventReasonType::rPastTime:
@@ -148,7 +148,7 @@ String DecisionEventReasonToString(DecisionEventReasonType DecisionEventReason)
 		break;
 
 	case DecisionEventReasonType::rPastWaypoint:
-		DecisionEventReasonAsString = F("PastWaypoint");
+		DecisionEventReasonAsString = F("PastWP");
 		break;
 
 	case DecisionEventReasonType::rUnkown:
@@ -156,11 +156,11 @@ String DecisionEventReasonToString(DecisionEventReasonType DecisionEventReason)
 		break;
 
 	case DecisionEventReasonType::rLimitToSailingCourse:
-		DecisionEventReasonAsString = F("LimitToSailingCourse");
+		DecisionEventReasonAsString = F("LimitToSailCrs");
 		break;
 
 	case DecisionEventReasonType::rPastLoiterBoundary:
-		DecisionEventReasonAsString = F("PastLoiterBoundary");
+		DecisionEventReasonAsString = F("PastLoitBndry");
 		break;
 
 	case DecisionEventReasonType::rNone:
@@ -168,15 +168,15 @@ String DecisionEventReasonToString(DecisionEventReasonType DecisionEventReason)
 		break;
 
 	case DecisionEventReasonType::rManualIntervention:
-		DecisionEventReasonAsString = F("ManualIntervention");
+		DecisionEventReasonAsString = F("Manual");
 		break;
 
 	case DecisionEventReasonType::rApproachingWP:
-		DecisionEventReasonAsString = F("ApproachingWP");
+		DecisionEventReasonAsString = F("ApproachWP");
 		break;
 
-	case DecisionEventReasonType::rInIrons:
-		DecisionEventReasonAsString = F("InIrons");
+		case DecisionEventReasonType::rInIronsRecover:
+		DecisionEventReasonAsString = F("InIronsRec");
 		break;
 
 	default:
@@ -195,8 +195,12 @@ String CourseTypeToString(SteeringCourseType CourseType)
 
 	switch (CourseType)
 	{
+	case SteeringCourseType::ctNotEstablished:
+		CourseTypeAsString = F("NotEstablished");
+		break;
+
 	case SteeringCourseType::ctDirectToWayPoint:
-		CourseTypeAsString = F("DirectToWayPoint");
+		CourseTypeAsString = F("DirectToWP");
 		break;
 
 	case SteeringCourseType::ctPortTack:
@@ -204,15 +208,15 @@ String CourseTypeToString(SteeringCourseType CourseType)
 		break;
 
 	case SteeringCourseType::ctStarboardTack:
-		CourseTypeAsString = F("StarboardTack");
+		CourseTypeAsString = F("StbdTack");
 		break;
 
 	case SteeringCourseType::ctPortTackRunning:
-		CourseTypeAsString = F("PortTackRun");
+		CourseTypeAsString = F("PortTkRun");
 		break;
 
 	case SteeringCourseType::ctStarboardTackRunning:
-		CourseTypeAsString = F("StbdTackRun");
+		CourseTypeAsString = F("StbdTkRun");
 		break;
 
 	default:
@@ -349,29 +353,20 @@ String GetInIronsStatusString(InIronsStateType state)
 
 	switch (state) {
 	case InIronsStateType::iistNo:
-		ResultString = "No";
+		ResultString = "iiNo";
 		break;
 
 	case InIronsStateType::iistPortTack:
-		ResultString = "PortTack";
+		ResultString = "iiPortTk";
 		break;
 
 	case InIronsStateType::iistStarboardTack:
-		ResultString = "StarboardTack";
+		ResultString = "iiStbdTk";
 		break;
-
-	//case InIronsStateType::iistPortReach:
-	//	ResultString = "PortReach";
-	//	break;
-
-	//case InIronsStateType::iistStarboardReach:
-	//	ResultString = "StarboardReach";
-	//	break;
 
 	default:
 		ResultString = "StatusUnknown";
 	}
-
 	return ResultString;
 }
 

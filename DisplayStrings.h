@@ -42,7 +42,7 @@ enum DecisionEventReasonType {
 	rNone,
 	rManualIntervention,
 	rApproachingWP,
-	rInIrons
+	rInIronsRecover
 };
 
 
