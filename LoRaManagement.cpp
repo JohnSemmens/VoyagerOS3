@@ -12,6 +12,8 @@ extern ResponseStatus rs;
 
 void Init_LoRa(void)
 {
+	Serial.println(F("*** Initializing LoRa EBYTE..."));
+
 	// Startup all pins and UART
 	e32ttl100.begin();
 
@@ -35,6 +37,7 @@ void Init_LoRa(void)
 	configuration.SPED.uartParity = MODE_00_8N1;
 	// save config - volatile only
 	rs = e32ttl100.setConfiguration(configuration, WRITE_CFG_PWR_DWN_LOSE);
+	Serial.println(F("*** Initializing LoRa EBYTE: ") + rs.getResponseDescription() + ".");
 
 	e32ttl100.setMode(MODE_TYPE::MODE_0_NORMAL);
 }

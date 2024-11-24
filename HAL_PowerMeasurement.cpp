@@ -19,8 +19,14 @@ void HALPowerMeasure::init()
     int MID = ina3221.getManufID();
     Serial.println(MID, HEX);
 
-    if (MID > 0) {
+    if (MID > 0 && MID < 0xFFFF) {
         EquipmentStatus = EquipmentStatusType::Found;
+        Serial.println(F("INA3221 Found."));
+    }
+    else
+    {
+        EquipmentStatus = EquipmentStatusType::NotFound;
+        Serial.println(F("Invalid Manufacturer's ID. INA3221 Not Found."));
     }
 
 

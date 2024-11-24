@@ -101,12 +101,13 @@
 // V3.4.44 21/9/2024 Added steering deadband, as a config item and parameter. Revert steering loops back to one loop.
 // V3.4.45 21/9/2024 Correction of SD Card logging of Performance message.
 // V3.4.46 27/10/2024 add in-irons detection and recovery
-// V3.4.47 9/11/2024 updates following code review for in-irons detection and recovery
+// V3.4.47 9/11/2024 u.pdates following code review for in-irons detection and recovery
 // V3.4.48 10/11/2024 updates following hardware integration testing for in-irons detection and recovery
 // V3.4.49 17/11/2024 In Irons handling ready for on-water testing.
+// V3.4.50 24/11/2024 improved equipment logging at startup - LoRa and INA3221a
 
-char Version[] = "V3.4.49"; 
-char VersionDate[] = "17/11/2024";
+char Version[] = "V3.4.50"; 
+char VersionDate[] = "24/11/2024";
 
 // Build Notes: use Visual Studio 2019,VS2022
 // teensy 3.6 on Voyager controller board V3.0
