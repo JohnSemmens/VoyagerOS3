@@ -38,6 +38,7 @@ LowPassFilter RollFilter;
 LowPassFilter HeadingErrorFilter;
 LowPassFilter SOGFilter;
 LowPassAngleFilter COGFilter;
+LowPassAngleFilter AWAFilter;
 
 void NavigationUpdate_SlowData(void) // 5 seconds
 {
@@ -115,8 +116,8 @@ void NavigationUpdate_SlowData(void) // 5 seconds
 
 	NavData.InIronsState = GetInIronsState(NavData);
 
-	// detect if past boundary and set state.
-	if (abs(NavData.CTE) > NavData.MaxCTE)
+	// detect if past boundary and set state., provided we are beating, and not reaching or running.
+	if ((abs(NavData.CTE) > NavData.MaxCTE) && (abs(NavData.AWA_Avg) < 50))
 	{
 		NavData.PastBoundaryHold = true;
 	}
@@ -197,6 +198,7 @@ void GetApparentWind(void)
 	{
 		NavData.AWA = simulated_vessel.WingsailAngle + (WingSail.TrimTabAngle * AWATrimTabFactor);
 	}
+	NavData.AWA_Avg = wrap_180(AWAFilter.Filter(NavData.AWA));
 };
 
 void Navigation_Init(void)
@@ -210,6 +212,8 @@ void Navigation_Init(void)
 	COGFilter.FilterConstant = 0.1;
 
 	HeadingErrorFilter.FilterConstant = 0.005;
+
+	AWAFilter.FilterConstant = 0.1;
 }
 
 void GetTrueWind(void)
@@ -279,6 +283,7 @@ void UpdateTurnHeadingV2(void)
 		{
 			NavData.ManoeuvreState = ManoeuvreStateType::mstCommenceToStbd;
 		}
+		SD_Logging_Event_Messsage("ManoeuvreState_0," + CourseTypeToString(NavData.ManoeuvreState));
 	}
 
 	//XXX asym gybe
@@ -313,7 +318,7 @@ void UpdateTurnHeadingV2(void)
 		// set the turn heading to be reaching on Port Tack, as an approach to final heading 
 		// but only if our turn heading doesn't overshoot CTS
 		NavData.TurnHDG = wrap_360_Int(NavData.AWD + GybeHoldAngle);
-		SD_Logging_Event_Messsage("ManoeuvreCalc," + String(NavData.AWD) + "," + String(GybeHoldAngle) + "," + String(NavData.AWD + GybeHoldAngle) + "," + String(NavData.TurnHDG));
+		SD_Logging_Event_Messsage("ManoeuvreCalc_P," + String(NavData.AWD) + "," + String(GybeHoldAngle) + "," + String(NavData.AWD + GybeHoldAngle) + "," + String(NavData.TurnHDG));
 
 		if (abs(PredictedAWA) > 100) // if we are running then skip the approach step
 		{
@@ -329,7 +334,7 @@ void UpdateTurnHeadingV2(void)
 		// set the turn heading to be reaching on starboard Tack, as an approach to final heading 
 		// but only if our turn heading doesn't overshoot CTS
 		NavData.TurnHDG = wrap_360_Int(NavData.AWD - GybeHoldAngle);
-		SD_Logging_Event_Messsage("ManoeuvreCalc," + String(NavData.AWD) + "," + String(-GybeHoldAngle) + "," + String(NavData.AWD - GybeHoldAngle) + "," + String(NavData.TurnHDG));
+		SD_Logging_Event_Messsage("ManoeuvreCalc_S," + String(NavData.AWD) + "," + String(-GybeHoldAngle) + "," + String(NavData.AWD - GybeHoldAngle) + "," + String(NavData.TurnHDG));
 
 		if (abs(PredictedAWA) > 100) // if we are running then skip the approach step
 		{
@@ -370,7 +375,7 @@ void UpdateTurnHeadingV2(void)
 
 	Prev_CTS = NavData.CTS;
 	TurnHeadingInitialised = true;
-	SD_Logging_Event_Messsage("ManoeuvreState," + CourseTypeToString(NavData.ManoeuvreState));
+	SD_Logging_Event_Messsage("ManoeuvreState_1," + CourseTypeToString(NavData.ManoeuvreState));
 }
 
 int get_CTE_Correction(NavigationDataType NavData)

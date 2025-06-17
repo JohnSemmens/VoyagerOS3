@@ -145,7 +145,7 @@ void HALDisplay::Page(char page)
 	// z: System Voltages
 
 	// B: Bluetooth  
-	// C: Decisions
+	// G: Decisions // changed from C
  	// D: Compass Cal Details
 	// E: Environment
 	// F: WingAngle Fault Detection
@@ -1241,7 +1241,7 @@ void HALDisplay::Page(char page)
 
 
 				// Decision Text Display **********************************
-		case 'C':
+		case 'G':
 			display.clearDisplay();
 			display.setCursor(0, 0);
 			display.setTextSize(1);

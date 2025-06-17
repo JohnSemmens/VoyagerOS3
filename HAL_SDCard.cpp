@@ -445,6 +445,10 @@ void SD_Logging_OpenFile() {
 	LogFile.print(F("VMG"));
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(F("VMC"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("AWA_Avg"));
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(F("SOG_Avg"));
 	LogFile.println();
 
 	// log software version and other userful data at the start of each log file
@@ -614,6 +618,10 @@ void SD_Logging_1s()
 	LogFile.print(NavData.VMG);
 	LogFile.print(Configuration.SDCardLogDelimiter);
 	LogFile.print(NavData.VMC);
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(NavData.AWA_Avg);
+	LogFile.print(Configuration.SDCardLogDelimiter);
+	LogFile.print(NavData.SOG_Avg);
 	LogFile.println();
 
 	LogFile.flush();

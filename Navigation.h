@@ -141,6 +141,7 @@ struct NavigationDataType {
 
 	 int ROLL_Avg;			// dampened Roll value passed through a low pass filter
 
+	 float AWA_Avg;			// dampened AWA
 	 float COG_Avg;			// dampened COG
 	 float SOG_Avg;			// dampened SOG
 	 float VMG;				// Velocity Made Good to windward

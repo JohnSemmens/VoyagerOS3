@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.10.35201.131
+VisualStudioVersion = 17.14.36202.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VoyagerOS3", "VoyagerOS3.vcxproj", "{0ED4A59E-290A-44A7-BC45-655BABC20D0D}"
 EndProject
@@ -30,6 +30,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {BD950C37-CC1F-4A68-B9E8-A620AA209EC8}
+		SolutionGuid = {04BDA536-38C5-4D55-8218-AAC5BA57E9BB}
 	EndGlobalSection
 EndGlobal
